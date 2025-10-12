@@ -45,7 +45,8 @@ const ImageContainer = styled("div", {
 });
 
 const AnimatedImage = styled(Image, {
-  transition: ".3s",
+  transition: "opacity .3s ease, filter .3s ease",
+  transitionDelay: "120ms",
 });
 
 // Style the Link component directly since it's now an <a> tag internally
@@ -80,6 +81,7 @@ const ProductCard: React.FunctionComponent<{
             <AnimatedImage
               src={images.images.mainPath}
               fill={true}
+              // use cover so placeholder scales to the card container
               style={{ objectFit: "fill" }}
               alt={images.images.mainPath}
               placeholder={images.images.mainBlur ? "blur" : undefined}
@@ -89,7 +91,8 @@ const ProductCard: React.FunctionComponent<{
             <AnimatedImage
               src={images.images.paths[0]}
               fill={true}
-              style={{ objectFit: "fill" }}
+              // use cover so placeholder scales to the card container
+              style={{ objectFit: "cover" }}
               alt={images.images.paths[0]}
               placeholder={images.images.blurDataURLs[0] ? "blur" : undefined}
               blurDataURL={images.images.blurDataURLs[0]}

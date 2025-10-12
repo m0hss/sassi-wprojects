@@ -3,7 +3,7 @@ import { styled, Box } from "../stitches.config";
 import { useCart } from "../lib/cart";
 import { currencyCodeToSymbol } from "../lib/stripeHelpers";
 import ProductCardCart from "../components/ProductCardCart";
-import { getStripe, cartItemToLineItem } from "../lib/stripeHelpers";
+import { cartItemToLineItem } from "../lib/stripeHelpers";
 import Layout from "../components/Layout";
 import PageHeadline from "../components/PageHeadline";
 import Footer from "../components/Footer";
@@ -71,7 +71,6 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
 
   const handleCheckout = async () => {
     setIsLoading(true);
-    const stripe = await getStripe();
     const lineItems = [...cart.values()].map((item) =>
       cartItemToLineItem({ cartItem: item, images: [""] }),
     );
@@ -89,13 +88,16 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
     });
 
     const session = await response.json();
-
-    const { error } = await (stripe as any).redirectToCheckout({
-      sessionId: session.id,
-    });
-    if (error) {
-      console.warn(error.message);
+    // Newer Stripe server-side Checkout returns a `url` that the client should
+    // navigate to. stripe.redirectToCheckout was removed from Stripe.js.
+    if (session && session.url) {
+      // Redirect the browser to the Checkout page
+      window.location.assign(session.url);
+      return;
     }
+
+    console.warn("No checkout URL returned from server", session);
+    setIsLoading(false);
   };
 
   return (

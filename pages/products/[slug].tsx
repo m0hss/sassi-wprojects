@@ -241,7 +241,8 @@ const DemoCaption = styled("h2", {
 });
 
 const AnimatedImage = styled(Image, {
-  transition: ".3s",
+  transition: "opacity .3s ease, filter .3s ease",
+  transitionDelay: "120ms",
 });
 
 const LayoutWrapper = styled("div", {
@@ -314,7 +315,8 @@ const ProductPage: NextPage<{
             <AnimatedImage
               src={images[0].path}
               layout="fill"
-              objectFit="fill"
+              // use cover so placeholder scales to the container size
+              style={{ objectFit: "fill" }}
               alt={images[0].path}
               placeholder="blur"
               blurDataURL={images[0].blurDataURL}
@@ -375,7 +377,7 @@ const ProductPage: NextPage<{
                 [];
               if (images.length > 1) {
                 // take images[1..4] (or fewer if not available)
-                for (let i = 1; i <= 4 && i < images.length; i++)
+                for (let i = 1; i <= 6 && i < images.length; i++)
                   demoCandidates.push(images[i]);
               }
               // if no images beyond the main, but we have at least one, duplicate the main as fallback
@@ -384,7 +386,7 @@ const ProductPage: NextPage<{
 
               // ensure we have up to 4 slots; if still empty push a placeholder marker
               while (
-                demoCandidates.length < 4 &&
+                demoCandidates.length < 6 &&
                 demoCandidates.length < (images.length > 0 ? images.length : 1)
               ) {
                 // noop - avoid infinite loop; this while only ensures we don't exceed 4
@@ -406,7 +408,7 @@ const ProductPage: NextPage<{
               }
 
               return demoCandidates
-                .slice(0, 4)
+                .slice(0, 6)
                 .map((img, idx) => (
                   <AnimatedImage
                     key={idx}

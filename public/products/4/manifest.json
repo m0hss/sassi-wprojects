@@ -1,4 +1,11 @@
 {
   "main": "alpha-flash.webp",
-  "demos": []
+  "demos": [
+    "alpha-1.webp",
+    "alpha-2.webp",
+    "alpha-3.webp",
+    "alpha-4.webp",
+    "alpha-5.webp",
+    "alpha-6.webp"
+  ]
 }

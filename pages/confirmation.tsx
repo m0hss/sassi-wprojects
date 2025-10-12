@@ -51,7 +51,8 @@ const ProductDescription = styled("p", {
 });
 
 const AnimatedImage = styled(Image, {
-  transition: ".3s",
+  transition: "opacity .3s ease, filter .3s ease",
+  transitionDelay: "120ms",
 });
 
 const LayoutWrapper = styled("div", {
