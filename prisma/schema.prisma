@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DEV_DATABASE_URL")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  slug        String
+  name        String
+  description String   @db.Text
+  price       Int
+  currency    String
+  url         String?  // optional preview URL for the product
+  brandId     Int
+  brand       Brand    @relation(fields: [brandId], references: [id])
+
+  @@index([brandId], map: "Product_brandId_fkey")
+}
+
+model Brand {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+}
