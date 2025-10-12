@@ -15,6 +15,13 @@ async function main() {
       name: "إضافات",
     },
   });
+    const brand3 = await prisma.brand.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: "عامة",
+    },
+  });
 
   const product1 = await prisma.product.upsert({
     where: { id: 1 },
@@ -54,7 +61,7 @@ async function main() {
       name: "قالب ماكس كورة MaxKoora",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      price: 45000,
+      price: 4500,
       currency: "usd",
       brandId: 1,
       url: "https://example.com/demos/M0wiki",
@@ -69,7 +76,7 @@ async function main() {
       name: "قالب ألفا فلاش AlphaFlash ",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      price: 1,
+      price: 6000,
       currency: "usd",
       brandId: 1,
       url: "https://example.com/demos/maxkoora",
@@ -84,7 +91,7 @@ async function main() {
       name: " السحب التلقائي لجدول المباريات M0SportAPI",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      price: 50000,
+      price: 3000,
       currency: "usd",
       brandId: 1,
       url: "https://example.com/demos/shootkooraV2",
@@ -99,7 +106,7 @@ async function main() {
       name: "قالب شوت كورة ShootKoora ",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      price: 30000,
+      price: 5000,
       currency: "usd",
       brandId: 2,
       url: "https://example.com/demos/M0sportAPI",
@@ -114,7 +121,7 @@ async function main() {
       name: "M0plyr مشغل ملفات البث المباشر",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      price: 45000,
+      price: 2900,
       currency: "usd",
       brandId: 1,
       url: "https://example.com/demos/shootkooraV3",
