@@ -84,6 +84,8 @@ const ProductCard: React.FunctionComponent<{
               // use cover so placeholder scales to the card container
               style={{ objectFit: "fill" }}
               alt={images.images.mainPath}
+              // responsive size: full width on small screens, ~1/3 viewport on larger
+              sizes="(max-width: 640px) 100vw, 33vw"
               placeholder={images.images.mainBlur ? "blur" : undefined}
               blurDataURL={images.images.mainBlur}
             />
@@ -94,6 +96,8 @@ const ProductCard: React.FunctionComponent<{
               // use cover so placeholder scales to the card container
               style={{ objectFit: "cover" }}
               alt={images.images.paths[0]}
+              // responsive size: full width on small screens, ~1/3 viewport on larger
+              sizes="(max-width: 640px) 100vw, 33vw"
               placeholder={images.images.blurDataURLs[0] ? "blur" : undefined}
               blurDataURL={images.images.blurDataURLs[0]}
             />
@@ -102,6 +106,8 @@ const ProductCard: React.FunctionComponent<{
               src={PlaceholderImage}
               fill={true}
               style={{ objectFit: "cover" }}
+              // placeholder used in product list - same responsive sizing
+              sizes="(max-width: 640px) 100vw, 33vw"
               alt="placeholder"
             />
           )}

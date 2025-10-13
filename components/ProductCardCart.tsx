@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { styled, Box } from "../stitches.config";
@@ -7,6 +9,7 @@ import { currencyCodeToSymbol } from "../lib/stripeHelpers";
 import PlaceholderImage from "../public/placeholder.png";
 
 import type { CartItem } from "../lib/cart";
+import { sanitizeHtml } from "../lib/sanitize";
 import { useEffect, useState, useCallback } from "react";
 
 const Wrapper = styled("div", {
@@ -59,13 +62,18 @@ const CountButton = styled("button", {
   },
 });
 
-const ImageContainer = styled("a", {
-  all: "unset",
+const ImageContainer = styled("div", {
   display: "block",
   position: "relative",
   height: "130px",
   width: "110px",
   cursor: "pointer",
+});
+
+// Styled Link wrapper to avoid having an <a> descendant inside another <a>
+const StyledLink = styled(Link, {
+  all: "unset",
+  display: "block",
 });
 
 const ProductCardCart: React.FunctionComponent<{
@@ -95,7 +103,7 @@ const ProductCardCart: React.FunctionComponent<{
   return (
     <Wrapper>
       <Box css={{ display: "flex", flex: 1 }}>
-        <Link href={`/products/${product.slug}`} passHref>
+        <StyledLink href={`/products/${product.slug}`}>
           <ImageContainer>
             {images?.length ? (
               images[0].blurDataURL ? (
@@ -104,6 +112,8 @@ const ProductCardCart: React.FunctionComponent<{
                   fill={true}
                   style={{ objectFit: "cover" }}
                   alt={images[0].path}
+                  // cart thumbnail: container is ~110px wide, hint the browser
+                  sizes="110px"
                   placeholder="blur"
                   blurDataURL={images[0].blurDataURL}
                 />
@@ -113,6 +123,8 @@ const ProductCardCart: React.FunctionComponent<{
                   fill={true}
                   style={{ objectFit: "cover" }}
                   alt={images[0].path}
+                  // cart thumbnail: fixed size hint
+                  sizes="110px"
                 />
               )
             ) : (
@@ -120,11 +132,13 @@ const ProductCardCart: React.FunctionComponent<{
                 src={PlaceholderImage}
                 fill={true}
                 style={{ objectFit: "cover" }}
+                // placeholder thumbnail
+                sizes="110px"
                 alt="placeholder"
               />
             )}
           </ImageContainer>
-        </Link>
+        </StyledLink>
         <Box css={{ padding: "$3", display: "flex", flex: 1, justifyContent: "space-between" }}>
           <Box
             css={{
@@ -136,7 +150,15 @@ const ProductCardCart: React.FunctionComponent<{
           >
             <ProductName>{product.name}</ProductName>
             <ProductDescription>
-              {product.description.substr(0, 40)}...
+              {
+                // sanitize the description and strip any tags for a safe preview
+                ((): string => {
+                  const raw = product.description ?? "";
+                  const cleaned = sanitizeHtml(raw);
+                  const textOnly = cleaned.replace(/<[^>]+>/g, "");
+                  return textOnly.length > 40 ? textOnly.substr(0, 40) + "..." : textOnly;
+                })()
+              }
             </ProductDescription>
             <ProductPrice>
               {currencyCodeToSymbol(product.currency)} {product.price / 100}

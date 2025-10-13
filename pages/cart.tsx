@@ -159,7 +159,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  // placeholder="أدخل بريدك الإلكتروني هنا"
+                  placeholder="أدخل بريدك الإلكتروني هنا"
                   required
                   css={{
                   width: "calc(100% - 22px)",
@@ -172,10 +172,9 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   paddingRight: "$2",
                   transition:
                   "background 150ms, box-shadow 150ms, color 150ms",
-                  "&:focus": {
-                  outline: "none",
-                  marginLeft: "$2",
-                  boxShadow: "0 0 0 1px $crimson12",
+                  "&::placeholder": {
+                  fontFamily: "Cairo, sans-serif",
+                  fontSize: "16px",
                   },
                   }}
                 />

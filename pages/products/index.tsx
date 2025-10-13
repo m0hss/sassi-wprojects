@@ -69,8 +69,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       try {
         const productImagePaths = await fs.readdir(imagesDirectory);
 
+        // Filter to image files only (same pattern used elsewhere)
+        const imageFiles = productImagePaths.filter((f) => /\.(jpe?g|png|webp|gif|avif|svg)$/i.test(f));
+
         const blurDataURLs = await Promise.all(
-          productImagePaths.map(async (src) => {
+          imageFiles.map(async (src) => {
             // Read the local image file into a Buffer and pass it to plaiceholder
             const imagePath = path.join(imagesDirectory, src);
             const imageBuffer = await fs.readFile(imagePath);
@@ -79,13 +82,34 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           }),
         );
 
+        // try to read manifest.json and resolve main if present
+        let mainPath: string | null = null;
+        let mainBlur: string | undefined = undefined;
+        try {
+          const manifestRaw = await fs.readFile(path.join(imagesDirectory, "manifest.json"), "utf8");
+          const manifest = JSON.parse(manifestRaw) as { main?: string; demos?: string[] };
+          if (manifest && typeof manifest.main === "string") {
+            const candidate = manifest.main;
+            const idx = imageFiles.findIndex((n) => n === candidate);
+            if (idx >= 0) {
+              mainPath = `/products/${product.id}/${imageFiles[idx]}`;
+              mainBlur = blurDataURLs[idx];
+            }
+          }
+        } catch (err) {
+          // no manifest or invalid -> leave mainPath null
+        }
+
         allImagePaths.push({
           id: product.id,
           images: {
-            paths: productImagePaths.map(
+            paths: imageFiles.map(
               (fileName) => `/products/${product.id}/${fileName}`,
             ),
             blurDataURLs: blurDataURLs,
+            // include resolved main if manifest provided one
+            mainPath,
+            mainBlur,
           },
         });
       } catch (error) {

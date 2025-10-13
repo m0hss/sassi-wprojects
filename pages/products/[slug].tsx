@@ -245,6 +245,10 @@ const AnimatedImage = styled(Image, {
   transitionDelay: "120ms",
 });
 
+// Hero-specific image alias to avoid any unintended size/style mixing with
+// thumbnail/demo usages and to mark it as priority for LCP.
+const HeroImage = AnimatedImage;
+
 const LayoutWrapper = styled("div", {
   background: "$mauve1",
   padding: "$4",
@@ -285,6 +289,16 @@ const ProductPage: NextPage<{
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Disable background scrolling when lightbox is open
+  useEffect(() => {
+    if (!lightbox) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [lightbox]);
+
   const handleAddToCart = () => {
     dispatch({
       type: "addItem",
@@ -312,11 +326,16 @@ const ProductPage: NextPage<{
           <div
             style={{ height: "100%", position: "relative"}}
           >
-            <AnimatedImage
+            <HeroImage
               src={images[0].path}
-              layout="fill"
+              fill={true}
               // use cover so placeholder scales to the container size
               style={{ objectFit: "fill" }}
+              // main hero image: layout adds large horizontal padding, so on wide
+              // screens the visible image width is ~40vw; on small screens it's full
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              // priority flag helps Next preload the LCP image at the correct size
+              priority
               alt={images[0].path}
               placeholder="blur"
               blurDataURL={images[0].blurDataURL}
@@ -326,8 +345,10 @@ const ProductPage: NextPage<{
           <div style={{ height: "100%", position: "relative" }}>
             <Image
               src={PlaceholderImage}
-              layout="fill"
-              objectFit="cover"
+              fill={true}
+              // placeholder should cover the container; same responsive hint as hero
+              style={{ objectFit: "cover" }}
+              sizes="(min-width: 1024px) 40vw, 100vw"
               alt="placeholder"
             />
           </div>
@@ -398,10 +419,11 @@ const ProductPage: NextPage<{
                 return (
                   <Image
                     src={PlaceholderImage}
-                    layout="responsive"
                     width={400}
                     height={300}
-                    objectFit="cover"
+                    // placeholder demo tile
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                    style={{ objectFit: "cover" }}
                     alt="placeholder"
                   />
                 );
@@ -413,10 +435,11 @@ const ProductPage: NextPage<{
                   <AnimatedImage
                     key={idx}
                     src={img.path}
-                    layout="responsive"
                     width={400}
                     height={300}
-                    objectFit="cover"
+                    // demo tiles live in a grid; hint responsive sizes
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                    style={{ objectFit: "cover" }}
                     alt={`${product.name} demo ${idx + 1}`}
                     placeholder={img.blurDataURL ? "blur" : undefined}
                     blurDataURL={img.blurDataURL}
@@ -460,8 +483,10 @@ const ProductPage: NextPage<{
             >
               <AnimatedImage
                 src={lightbox.src}
-                layout="fill"
-                objectFit="contain"
+                fill={true}
+                style={{ objectFit: "contain" }}
+                // preview occupies most of the viewport
+                sizes="100vw"
                 alt="preview"
                 placeholder={lightbox.blur ? "blur" : undefined}
                 blurDataURL={lightbox.blur}

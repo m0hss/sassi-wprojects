@@ -12,7 +12,7 @@ const LayoutWrapper = styled("div", {
   },
 
   "@large": {
-    padding: "5% 16%",
+    padding: "5% 20%",
   },
 });
 

@@ -1,5 +1,6 @@
 // import { Prisma } from "@prisma/client";
 import type { CartItem } from "./cart";
+import { sanitizeHtml } from "./sanitize";
 
 export const cartItemToLineItem = ({
   cartItem,
@@ -14,7 +15,14 @@ export const cartItemToLineItem = ({
       unit_amount_decimal: cartItem.product.price,
       product_data: {
         name: cartItem.product.name,
-        description: cartItem.product.description,
+        // Sanitize and strip HTML to provide plain text to Stripe (avoid raw HTML in Checkout)
+        description: (() => {
+          const raw = cartItem.product.description ?? "";
+          const cleaned = sanitizeHtml(raw);
+          const textOnly = cleaned.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+          // Cap description length to 500 chars to avoid overly long fields
+          return textOnly.length > 500 ? textOnly.substr(0, 500) : textOnly;
+        })(),
         images: ["urlToImage"],
         // meta: { key: "value" },
         // tax_code: "dqwd", // https://stripe.com/docs/tax/tax-codes

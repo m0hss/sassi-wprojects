@@ -135,8 +135,10 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
       <ImageContainer>
         <Image
           src={SuccessImage}
-          layout="fill"
-          objectFit="cover"
+          fill={true}
+          style={{ objectFit: "cover" }}
+          // full-bleed success image
+          sizes="100vw"
           alt="success image"
           placeholder="blur"
         />
