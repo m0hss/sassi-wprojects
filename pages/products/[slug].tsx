@@ -323,9 +323,7 @@ const ProductPage: NextPage<{
       />
       <ImageContainer>
         {images.length ? (
-          <div
-            style={{ height: "100%", position: "relative"}}
-          >
+          <div style={{ height: "100%", position: "relative" }}>
             <HeroImage
               src={images[0].path}
               fill={true}
@@ -356,7 +354,14 @@ const ProductPage: NextPage<{
       </ImageContainer>
       <Box as="main" css={{ paddingBottom: "$3" }}>
         <ProductBrand>{product.brand.name}</ProductBrand>
-        <Box css={{ display: "flex", alignItems: "center", gap: "$3", justifyContent: "space-between" }}>
+        <Box
+          css={{
+            display: "flex",
+            alignItems: "center",
+            gap: "$3",
+            justifyContent: "space-between",
+          }}
+        >
           <ProductName>{product.name}</ProductName>
           {images.length ? (
             <Button
@@ -366,7 +371,10 @@ const ProductPage: NextPage<{
                   // open product preview URL in a new tab (simple behavior)
                   window.open(previewUrl, "_blank");
                 } else {
-                  setLightbox({ src: images[0].path, blur: images[0].blurDataURL });
+                  setLightbox({
+                    src: images[0].path,
+                    blur: images[0].blurDataURL,
+                  });
                 }
               }}
               aria-label="Preview product image"
@@ -384,73 +392,73 @@ const ProductPage: NextPage<{
           <>
             <DemoCaption>صور {product.name}</DemoCaption>
             <DemoSection>
-        
-          <Box
-            css={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: "$3",
-            }}
-          >
-            {(() => {
-              // build an array of up to 4 images: prefer images[1..], else use images[0], else placeholder
-              const demoCandidates: { path: string; blurDataURL?: string }[] =
-                [];
-              if (images.length > 1) {
-                // take images[1..4] (or fewer if not available)
-                for (let i = 1; i <= 6 && i < images.length; i++)
-                  demoCandidates.push(images[i]);
-              }
-              // if no images beyond the main, but we have at least one, duplicate the main as fallback
-              if (demoCandidates.length === 0 && images.length > 0)
-                demoCandidates.push(images[0]);
+              <Box
+                css={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: "$3",
+                }}
+              >
+                {(() => {
+                  // build an array of up to 4 images: prefer images[1..], else use images[0], else placeholder
+                  const demoCandidates: {
+                    path: string;
+                    blurDataURL?: string;
+                  }[] = [];
+                  if (images.length > 1) {
+                    // take images[1..4] (or fewer if not available)
+                    for (let i = 1; i <= 6 && i < images.length; i++)
+                      demoCandidates.push(images[i]);
+                  }
+                  // if no images beyond the main, but we have at least one, duplicate the main as fallback
+                  if (demoCandidates.length === 0 && images.length > 0)
+                    demoCandidates.push(images[0]);
 
-              // ensure we have up to 4 slots; if still empty push a placeholder marker
-              while (
-                demoCandidates.length < 6 &&
-                demoCandidates.length < (images.length > 0 ? images.length : 1)
-              ) {
-                // noop - avoid infinite loop; this while only ensures we don't exceed 4
-                break;
-              }
+                  // ensure we have up to 4 slots; if still empty push a placeholder marker
+                  while (
+                    demoCandidates.length < 6 &&
+                    demoCandidates.length <
+                      (images.length > 0 ? images.length : 1)
+                  ) {
+                    // noop - avoid infinite loop; this while only ensures we don't exceed 4
+                    break;
+                  }
 
-              // render up to 4 tiles; if demoCandidates is empty show single placeholder tile
-              if (demoCandidates.length === 0) {
-                return (
-                  <Image
-                    src={PlaceholderImage}
-                    width={400}
-                    height={300}
-                    // placeholder demo tile
-                    sizes="(max-width: 640px) 100vw, 33vw"
-                    style={{ objectFit: "cover" }}
-                    alt="placeholder"
-                  />
-                );
-              }
+                  // render up to 4 tiles; if demoCandidates is empty show single placeholder tile
+                  if (demoCandidates.length === 0) {
+                    return (
+                      <Image
+                        src={PlaceholderImage}
+                        width={400}
+                        height={300}
+                        // placeholder demo tile
+                        sizes="(max-width: 640px) 100vw, 33vw"
+                        style={{ objectFit: "cover" }}
+                        alt="placeholder"
+                      />
+                    );
+                  }
 
-              return demoCandidates
-                .slice(0, 6)
-                .map((img, idx) => (
-                  <AnimatedImage
-                    key={idx}
-                    src={img.path}
-                    width={400}
-                    height={300}
-                    // demo tiles live in a grid; hint responsive sizes
-                    sizes="(max-width: 640px) 100vw, 33vw"
-                    style={{ objectFit: "cover" }}
-                    alt={`${product.name} demo ${idx + 1}`}
-                    placeholder={img.blurDataURL ? "blur" : undefined}
-                    blurDataURL={img.blurDataURL}
-                    css={{ cursor: "pointer", borderRadius: 6 }}
-                    onClick={() =>
-                      setLightbox({ src: img.path, blur: img.blurDataURL })
-                    }
-                  />
-                ));
-            })()}
-          </Box>
+                  return demoCandidates.slice(0, 6).map((img, idx) => (
+                    <AnimatedImage
+                      key={idx}
+                      src={img.path}
+                      width={400}
+                      height={300}
+                      // demo tiles live in a grid; hint responsive sizes
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                      style={{ objectFit: "cover" }}
+                      alt={`${product.name} demo ${idx + 1}`}
+                      placeholder={img.blurDataURL ? "blur" : undefined}
+                      blurDataURL={img.blurDataURL}
+                      css={{ cursor: "pointer", borderRadius: 6 }}
+                      onClick={() =>
+                        setLightbox({ src: img.path, blur: img.blurDataURL })
+                      }
+                    />
+                  ));
+                })()}
+              </Box>
             </DemoSection>
           </>
         ) : null}
