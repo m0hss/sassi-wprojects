@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
+    "postinstall": "prisma generate",
     "gh:release": "gh release create"
   },
   "dependencies": {
