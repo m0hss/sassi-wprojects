@@ -68,26 +68,23 @@ const SocialLink = styled("a", {
   },
 });
 
-// add responsive payment logo container
+// add responsive payment logo container — parent is positioned so Image fill can work
 const PaymentLogo = styled("div", {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+  position: "relative",
   width: "96px",
-  flex: "0 1 65px",
-  "& img": {
-    width: "100%",
-    height: "auto",
-    display: "block",
-    objectFit: "contain",
-  },
+  height: "78px",
+  flex: "0 1 96px",
+  overflow: "hidden",
+  borderRadius: 6,
   "@media (max-width: 640px)": {
     width: "72px",
-    flex: "0 1 56px",
+    height: "74px",
+    flex: "0 1 72px",
   },
   "@media (max-width: 420px)": {
     width: "56px",
-    flex: "0 1 48px",
+    height: "74px",
+    flex: "0 1 71px",
   },
 });
 
@@ -151,19 +148,19 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
         }}
       >
         <PaymentLogo>
-          <Image src="/payments/bitcoin.svg" alt="Bitcoin" />
+          <Image src="/payments/bitcoin.svg" alt="Bitcoin" fill style={{ objectFit: "contain" }} />
         </PaymentLogo>
         <PaymentLogo>
-          <Image src="/payments/visa.svg" alt="Visa" />
+          <Image src="/payments/visa.svg" alt="Visa" fill style={{ objectFit: "contain" }} />
         </PaymentLogo>
         <PaymentLogo>
-          <Image src="/payments/mastercard.svg" alt="Mastercard" />
+          <Image src="/payments/mastercard.svg" alt="Mastercard" fill style={{ objectFit: "contain" }} />
         </PaymentLogo>
         <PaymentLogo>
-          <Image src="/payments/paypal.svg" alt="PayPal" />
+          <Image src="/payments/paypal.svg" alt="PayPal" fill style={{ objectFit: "contain" }} />
         </PaymentLogo>
         <PaymentLogo>
-          <Image src="/payments/bancontact.svg" alt="Bancontact" />
+          <Image src="/payments/bancontact.svg" alt="Bancontact" fill style={{ objectFit: "contain" }} />
         </PaymentLogo>
       </Box>
     </Wrapper>
