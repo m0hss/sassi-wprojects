@@ -37,17 +37,24 @@ async function loadMessages(locale: Locale): Promise<Messages> {
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    // Default to Arabic on the server to ensure SSR uses Arabic by default.
-    if (typeof window === "undefined") return "ar";
-    // On the client prefer an explicit user setting stored in localStorage.
+  // Always initialize to Arabic so server and the initial client render match.
+  const [locale, setLocaleState] = useState<Locale>(() => "ar");
+
+  // After the client mounts, pick up any stored locale or navigator preference.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     const stored = (localStorage.getItem("locale") as Locale) || null;
-    if (stored) return stored;
-    // If navigator explicitly indicates English, allow that; otherwise default to Arabic.
+    if (stored && stored !== locale) {
+      setLocaleState(stored);
+      return;
+    }
     const nav = navigator.language || "";
-    if (nav.startsWith("en")) return "en";
-    return "ar";
-  });
+    const navLocale: Locale = nav.startsWith("en") ? "en" : "ar";
+    if (navLocale !== locale) {
+      setLocaleState(navLocale);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount
 
   const [messages, setMessages] = useState<Messages>({});
 
