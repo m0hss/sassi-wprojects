@@ -37,22 +37,36 @@ async function loadMessages(locale: Locale): Promise<Messages> {
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // Always initialize to Arabic so server and the initial client render match.
-  const [locale, setLocaleState] = useState<Locale>(() => "ar");
+  // Initialize from build-time env default (NEXT_PUBLIC_DEFAULT_LOCALE) if provided,
+  // otherwise fall back to Arabic. This ensures SSR uses the intended default.
+  const initialLocale =
+    (process.env.NEXT_PUBLIC_DEFAULT_LOCALE as Locale) || "ar";
+  const [locale, setLocaleState] = useState<Locale>(() => initialLocale);
 
   // After the client mounts, pick up any stored locale or navigator preference.
+  // Behavior change: if a build-time env default (NEXT_PUBLIC_DEFAULT_LOCALE) exists,
+  // prefer it over browser/navigator language and previously stored locale so the
+  // app always starts with the deploy/build default. The user's stored preference
+  // is still respected for subsequent visits only when they explicitly set it.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const stored = (localStorage.getItem("locale") as Locale) || null;
-    if (stored && stored !== locale) {
-      setLocaleState(stored);
+
+    const envDefault = (process.env.NEXT_PUBLIC_DEFAULT_LOCALE as Locale) || null;
+
+    // If env default exists, always use it on first mount (override stored/nav)
+    if (envDefault) {
+      if (envDefault !== locale) {
+        setLocaleState(envDefault);
+      }
       return;
     }
 
-    // Prefer an explicit deploy-time default if provided (set NEXT_PUBLIC_DEFAULT_LOCALE in Vercel)
-    const envDefault = (process.env.NEXT_PUBLIC_DEFAULT_LOCALE as Locale) || null;
-    if (envDefault && envDefault !== locale) {
-      setLocaleState(envDefault);
+    // No env default: fall back to stored, then navigator language
+    if (stored) {
+      if (stored !== locale) {
+        setLocaleState(stored);
+      }
       return;
     }
 
@@ -85,7 +99,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
   // memoize translation function so its identity only changes when messages change
   const t = useCallback(
     (key: string, fallback = "") => {
-      return messages[key] ?? fallback ?? key;
+      return messages[key] ?? (fallback || key);
     },
     [messages],
   );
