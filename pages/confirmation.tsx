@@ -125,7 +125,7 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
   useEffect(() => {
     // If checkout is completed, the cart should be cleared.
     dispatch({ type: "clearCart" });
-  }, []);
+  }, [dispatch]);
 
   /**
    * Data for buyer

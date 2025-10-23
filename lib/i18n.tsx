@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
 
 type Locale = "en" | "ar";
 
@@ -27,7 +34,9 @@ async function loadMessages(locale: Locale): Promise<Messages> {
   }
 }
 
-export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [locale, setLocaleState] = useState<Locale>(() => {
     // Default to Arabic on the server to ensure SSR uses Arabic by default.
     if (typeof window === "undefined") return "ar";
@@ -55,13 +64,21 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [locale]);
 
-  const setLocale = (l: Locale) => setLocaleState(l);
+  // stable setter to avoid changing identity each render
+  const setLocale = useCallback((l: Locale) => setLocaleState(l), []);
 
-  const t = (key: string, fallback = "") => {
-    return messages[key] ?? fallback ?? key;
-  };
+  // memoize translation function so its identity only changes when messages change
+  const t = useCallback(
+    (key: string, fallback = "") => {
+      return messages[key] ?? fallback ?? key;
+    },
+    [messages],
+  );
 
-  const value = useMemo(() => ({ locale, setLocale, t }), [locale, messages]);
+  const value = useMemo(
+    () => ({ locale, setLocale, t }),
+    [locale, setLocale, t],
+  );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 };

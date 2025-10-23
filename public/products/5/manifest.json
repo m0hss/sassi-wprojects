@@ -1,4 +1,7 @@
 {
-  "main": "moapi.webp",
-  "demos": []
+  "main": "ShootKoora1.webp",
+  "demos": [
+    "shoot-1.webp",
+    "shoot-2.webp"
+  ]
 }

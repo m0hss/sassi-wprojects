@@ -84,6 +84,9 @@ const ProductCard: React.FunctionComponent<{
   const localizedBrandName =
     locale === "en" ? (product.brand as any).name_en || product.brand.name : product.brand.name;
 
+  // determine brand id (try nested brand.id first, then product.brandId)
+  const brandId = (product.brand as any)?.id ?? (product as any).brandId ?? null;
+
   return (
     <Wrapper>
       <StyledLink href={`/products/${product.slug}`}>
@@ -141,9 +144,11 @@ const ProductCard: React.FunctionComponent<{
             <ProductBrand>{localizedBrandName}</ProductBrand>
             <ProductName>{localizedName}</ProductName>
           </div>
-          <ProductPrice>
-            {currencyCodeToSymbol(product.currency)} {product.price / 100}
-          </ProductPrice>
+          {brandId !== 3 && (
+            <ProductPrice>
+              {currencyCodeToSymbol(product.currency)} {product.price / 100}
+            </ProductPrice>
+          )}
         </Box>
       </StyledLink>
     </Wrapper>
