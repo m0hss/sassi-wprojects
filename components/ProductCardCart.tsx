@@ -110,7 +110,7 @@ const ProductCardCart: React.FunctionComponent<{
                 <Image
                   src={images[0].path}
                   fill={true}
-                  style={{ objectFit: "cover" }}
+                  style={{ objectFit: "fill" }}
                   alt={images[0].path}
                   // cart thumbnail: container is ~110px wide, hint the browser
                   sizes="110px"

@@ -12,6 +12,7 @@ import * as Popover from "@radix-ui/react-popover";
 import * as Switch from "@radix-ui/react-switch";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "../lib/i18n";
 
 const scaleUp = keyframes({
   "0%": { transform: "scale(1)", background: "$crimson10" },
@@ -135,6 +136,14 @@ const Label = styled("label", {
   lineHeight: 1,
   userSelect: "none",
 });
+const LangSelect = styled("select", {
+  marginLeft: 12,
+  padding: "4px 8px",
+  borderRadius: 6,
+  border: "1px solid $mauve5",
+  background: "$mauve1",
+  color: "$crimson12",
+});
 // Create a separate styled component for Link
 const StyledLink = styled(Link, {
   flex: 1,
@@ -160,6 +169,7 @@ const MenuBar: React.FunctionComponent = () => {
   const { cart } = useCart();
   const { theme, setTheme } = useTheme();
   const [animate, setAnimate] = useState(false);
+  const { t, locale, setLocale } = useI18n();
 
   return (
     <Wrapper>
@@ -190,19 +200,33 @@ const MenuBar: React.FunctionComponent = () => {
             </Item>
           </MenuBarBox>
           <StyledContent side="top">
-            <Flex css={{ alignItems: "center", cursor: "pointer" }}>
-              <Label htmlFor="s1" css={{ paddingRight: 15 }}>
-                المظهر
-              </Label>
-              <StyledSwitch
-                id="s1"
-                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                aria-label="Theme switch"
-              >
-                <StyledThumb>
-                  {theme === "light" ? <SunIcon /> : <MoonIcon />}
-                </StyledThumb>
-              </StyledSwitch>
+            <Flex css={{  gap: "$5" }}>
+              <Flex css={{ alignItems: "center", cursor: "pointer"}}>
+                <Label htmlFor="s1" css={{ paddingRight: 8, paddingLeft: 0 }}>
+                  {t("menu.appearance", "المظهر")}
+                </Label>
+                <StyledSwitch
+                  id="s1"
+                  onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                  aria-label="Theme switch"
+                >
+                  <StyledThumb>
+                    {theme === "light" ? <SunIcon /> : <MoonIcon />}
+                  </StyledThumb>
+                </StyledSwitch>
+              </Flex>
+              <Flex css={{ alignItems: "center", cursor: "pointer" }}>
+                <Label css={{ paddingRight: 8, paddingLeft: 0 }}>{t("menu.language", "اللغة")}</Label>
+                <LangSelect
+                  css={{ marginLeft: 6 }}
+                  aria-label="Select language"
+                  value={locale}
+                  onChange={(e) => setLocale(e.target.value as any)}
+                >
+                  <option value="en">{t("lang.en", "English")}</option>
+                  <option value="ar">{t("lang.ar", "العربية")}</option>
+                </LangSelect>
+              </Flex>
             </Flex>
             {/* <Popover.Close /> */}
             {/* <Popover.Arrow /> */}

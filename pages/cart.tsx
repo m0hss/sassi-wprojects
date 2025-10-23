@@ -53,10 +53,12 @@ const ProductList = styled("div", {
   },
 });
 
-const ProductPrice = styled("div", {
-  fontSize: "20px",
-  lineHeight: "20px",
-  fontFamily: "Cairo, sans-serif",
+const PaymentMethod = styled("label", {
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+  background: "var(--colors-crimson1)",
+  width: "calc(100% - 10px)",
 });
 
 const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
@@ -64,6 +66,9 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [total, setTotal] = useState(productsTotal);
+  const [paymentMethod, setPaymentMethod] = useState<
+    "stripe" | "paypal" | "bancontact" | "Bitcoin"
+  >("stripe");
 
   useEffect(() => {
     setTotal(productsTotal);
@@ -84,6 +89,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
       body: JSON.stringify({
         line_items: lineItems,
         customer_email: email,
+        payment_method: paymentMethod,
       }),
     });
 
@@ -139,11 +145,12 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   marginBottom: "$2",
                   fontWeight: 600,
                   marginRight: "$1",
+                  color: "$crimson11",
                 }}
               >
                 عنوان البريد الإلكتروني (ضروري)
               </Box>
-                <Box
+              <Box
                 css={{
                   marginLeft: "-$2",
                   marginRight: "-$4",
@@ -153,7 +160,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   borderLeft: "none",
                   borderRight: "none",
                 }}
-                >
+              >
                 <Box
                   as="input"
                   type="email"
@@ -162,23 +169,23 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   placeholder="أدخل بريدك الإلكتروني هنا"
                   required
                   css={{
-                  width: "calc(100% - 22px)",
-                  fontSize: "16px",
-                  zIndex: 0,
-                  paddingTop: "10px",
-                  paddingBottom: "10px",
-                  border: "none",
-                  background: "$crimson1",
-                  paddingRight: "$2",
-                  transition:
-                  "background 150ms, box-shadow 150ms, color 150ms",
-                  "&::placeholder": {
-                  fontFamily: "Cairo, sans-serif",
-                  fontSize: "16px",
-                  },
+                    width: "calc(100% - 22px)",
+                    fontSize: "16px",
+                    zIndex: 0,
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    border: "none",
+                    background: "$crimson1",
+                    paddingRight: "$2",
+                    transition:
+                      "background 150ms, box-shadow 150ms, color 150ms",
+                    "&::placeholder": {
+                      fontFamily: "Cairo, sans-serif",
+                      fontSize: "16px",
+                    },
                   }}
                 />
-                </Box>
+              </Box>
 
               {!email || !/\S+@\S+\.\S+/.test(email) ? (
                 <Box
@@ -193,6 +200,72 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   الرجاء إدخال بريد إلكتروني صالح لإتمام الطلب.
                 </Box>
               ) : null}
+            </Box>
+            <Box css={{ padding: "$3 0" }}>
+              <Box
+                as="label"
+                css={{
+                  display: "block",
+                  marginBottom: "$2",
+                  fontWeight: 600,
+                  marginRight: "$1",
+                  color: "$crimson11",
+                }}
+              >
+                طريقة الدفع
+              </Box>
+              <Box
+                css={{
+                  marginLeft: "-$2",
+                  marginRight: "-$4",
+                  paddingRight: "$4",
+                  borderTop: "1px solid $mauve6",
+                  borderBottom: "1px solid $mauve6",
+                  borderLeft: "none",
+                  borderRight: "none",
+                }}
+              >
+                <PaymentMethod>
+                  <input
+                    type="checkbox"
+                    name="payment"
+                    value="stripe"
+                    checked={paymentMethod === "stripe"}
+                    onChange={() => setPaymentMethod("stripe")}
+                  />
+                  Debit or Credit Card
+                </PaymentMethod>
+                <PaymentMethod>
+                  <input
+                    type="checkbox"
+                    name="payment"
+                    value="paypal"
+                    checked={paymentMethod === "paypal"}
+                    onChange={() => setPaymentMethod("paypal")}
+                  />
+                  PayPal
+                </PaymentMethod>
+                <PaymentMethod>
+                  <input
+                    type="checkbox"
+                    name="payment"
+                    value="bancontact"
+                    checked={paymentMethod === "bancontact"}
+                    onChange={() => setPaymentMethod("bancontact")}
+                  />
+                  Bancontact
+                </PaymentMethod>
+                <PaymentMethod>
+                  <input
+                    type="checkbox"
+                    name="payment"
+                    value="Bitcoin"
+                    checked={paymentMethod === "Bitcoin"}
+                    onChange={() => setPaymentMethod("Bitcoin")}
+                  />
+                  Bitcoin
+                </PaymentMethod>
+              </Box>
             </Box>
             <Box
               css={{
@@ -228,6 +301,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   {currencyCodeToSymbol(cart[0].product.currency)} {total / 100}
                 </Box>
               </div>
+
               <Button
                 disabled={
                   isLoading || !/\S+@\S+\.\S+/.test(email) || cart.length === 0

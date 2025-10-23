@@ -15,6 +15,7 @@ import type { Tmeta } from "../types";
 import Footer from "../components/Footer";
 import { NextSeo } from "next-seo";
 import { getPlaiceholder } from "plaiceholder";
+import { useI18n } from "../lib/i18n";
 
 // use shared prisma client from lib/prisma
 
@@ -149,20 +150,27 @@ const Home: React.FunctionComponent<{
   }[];
   meta: Tmeta;
 }> = ({ products, images, meta }) => {
+  const { t } = useI18n();
+
+  // prefer translation keys but fall back to meta/env-provided strings
+  const headlineText = t("headline", meta?.headline ?? "") || meta?.headline;
+  const subheadlineText = t("subheadline", meta?.subheadline ?? "") || meta?.subheadline;
+  const contactText = t("contact", meta?.contact ?? "") || meta?.contact;
+
   return (
     <>
       <NextSeo
-        title={meta.headline}
-        description={meta.subheadline}
+        title={headlineText}
+        description={subheadlineText}
         openGraph={{
           type: "website",
-          title: meta.headline,
-          description: meta.subheadline,
+          title: headlineText,
+          description: subheadlineText,
           site_name: meta.name,
         }}
       />
       <MenuBar />
-      <PageHeadline>{meta.headline}</PageHeadline>
+      <PageHeadline>{headlineText}</PageHeadline>
       <Box
         as="p"
         css={{
@@ -174,7 +182,7 @@ const Home: React.FunctionComponent<{
           paddingLeft: "$2",
         }}
       >
-        {meta.subheadline}
+        {subheadlineText}
       </Box>
       <Grid>
         {products.map((product) => (
@@ -197,10 +205,10 @@ const Home: React.FunctionComponent<{
           direction: "ltr",
         }}
       >
-        <span>عرض جميع المنتجات</span>
+            <span>{t("products.view_all")}</span>
         <ArrowRightIcon />
       </Button>
-      <Footer {...meta} />
+      <Footer {...meta} contact={contactText} />
     </>
   );
 };

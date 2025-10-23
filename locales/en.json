@@ -1,0 +1,19 @@
+{
+  "menu.appearance": "Appearance",
+  "menu.language": "Language",
+  "headline": "WordPress themes & plugins with an Arabic touch 😍",
+  "subheadline": "We design websites for companies, organizations, and personal portfolios. We build and customize WordPress themes and scripts.",
+  "contact": "Contact Us",
+  "lang.en": "English",
+  "lang.ar": "العربية",
+  "menu.home": "Home",
+  "menu.cart": "Cart",
+  "menu.settings": "Settings"
+  ,"products.view_all": "View all products"
+  ,"products.headline": "Themes & plugins"
+  ,"pagination.next": "Next"
+  ,"pagination.prev": "Previous"
+  ,"preview": "Preview"
+  ,"demo.images": "Images"
+  ,"add_to_cart": "Add to cart"
+}

@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import { globalStyles, darkTheme } from "../stitches.config";
 import { ThemeProvider } from "next-themes";
+import { I18nProvider } from "../lib/i18n";
 // Remove IdProvider import
 import { CartProvider } from "../lib/cart";
 
@@ -26,11 +27,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         light: "light",
       }}
     >
-      <CartProvider>
-        <PageLayout>
-          <Component {...pageProps} />
-        </PageLayout>
-      </CartProvider>
+      <I18nProvider>
+        <CartProvider>
+          <PageLayout>
+            <Component {...pageProps} />
+          </PageLayout>
+        </CartProvider>
+      </I18nProvider>
     </ThemeProvider>
   );
 }

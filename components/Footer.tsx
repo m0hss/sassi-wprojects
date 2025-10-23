@@ -40,7 +40,8 @@ const SocialLink = styled("a", {
   cursor: "pointer",
   // borderTop: "1px solid $mauve6",
   // borderBottom: "1px solid $mauve6",
-  transition: "transform 180ms cubic-bezier(.2,.9,.3,1), box-shadow 180ms ease, background 160ms ease",
+  transition:
+    "transform 180ms cubic-bezier(.2,.9,.3,1), box-shadow 180ms ease, background 160ms ease",
   transform: "translateY(0) scale(1)",
   variants: {
     ghost: {
@@ -49,19 +50,42 @@ const SocialLink = styled("a", {
       },
     },
   },
-  '&:hover': {
-    transform: 'translateY(-4px) scale(1.06)',
-    boxShadow: '0 8px 20px rgba(0,0,0,0.08)',
-     background: "$mauve4",
+  "&:hover": {
+    transform: "translateY(-4px) scale(1.06)",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+    background: "$mauve4",
   },
-  '&:active': {
-    transform: 'translateY(-2px) scale(1.02)',
+  "&:active": {
+    transform: "translateY(-2px) scale(1.02)",
   },
-  '& svg': {
-    transition: 'transform 180ms cubic-bezier(.2,.9,.3,1)',
+  "& svg": {
+    transition: "transform 180ms cubic-bezier(.2,.9,.3,1)",
   },
-  '&:hover svg': {
-    transform: 'translateY(-2px)',
+  "&:hover svg": {
+    transform: "translateY(-2px)",
+  },
+});
+
+// add responsive payment logo container
+const PaymentLogo = styled("div", {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "96px",
+  flex: "0 1 65px",
+  "& img": {
+    width: "100%",
+    height: "auto",
+    display: "block",
+    objectFit: "contain",
+  },
+  "@media (max-width: 640px)": {
+    width: "72px",
+    flex: "0 1 56px",
+  },
+  "@media (max-width: 420px)": {
+    width: "56px",
+    flex: "0 1 48px",
   },
 });
 
@@ -84,16 +108,16 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
           </SocialLink>
 
           {/* WhatsApp */}
-            <SocialLink
+          <SocialLink
             href="https://wa.me/32493622901"
             target="_blank"
             rel="noreferrer noopener"
             title="WhatsApp"
             aria-label="WhatsApp"
             ghost
-            >
+          >
             <ChatBubbleIcon />
-            </SocialLink>
+          </SocialLink>
 
           {/* Facebook */}
           <SocialLink
@@ -108,16 +132,38 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
           </SocialLink>
 
           {/* Email */}
-            <SocialLink
-            href="/contact"
-            title="Email"
-            aria-label="Email"
-            ghost
-            >
+          <SocialLink href="/contact" title="Email" aria-label="Email" ghost>
             <EnvelopeClosedIcon />
-            </SocialLink>
+          </SocialLink>
         </Socials>
       </SocialsWrapper>
+      {/* Payment logos */}
+      <Box
+        css={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "$3",
+          marginTop: "35px",
+          alignItems: "center",
+          flexWrap: "wrap", // allow wrapping on small screens
+        }}
+      >
+        <PaymentLogo>
+          <img src="/payments/bitcoin.svg" alt="Bitcoin" />
+        </PaymentLogo>
+        <PaymentLogo>
+          <img src="/payments/visa.svg" alt="Visa" />
+        </PaymentLogo>
+        <PaymentLogo>
+          <img src="/payments/mastercard.svg" alt="Mastercard" />
+        </PaymentLogo>
+        <PaymentLogo>
+          <img src="/payments/paypal.svg" alt="PayPal" />
+        </PaymentLogo>
+        <PaymentLogo>
+          <img src="/payments/bancontact.svg" alt="Bancontact" />
+        </PaymentLogo>
+      </Box>
     </Wrapper>
   );
 };

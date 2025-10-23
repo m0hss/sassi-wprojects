@@ -11,6 +11,7 @@ import PageHeadline from "../../components/PageHeadline";
 import { Tmeta } from "../../types";
 import Footer from "../../components/Footer";
 import MenuBar from "../../components/MenuBar";
+import { useI18n } from "../../lib/i18n";
 import { NextSeo } from "next-seo";
 import { getPlaiceholder } from "plaiceholder";
 import Button from "../../components/Button";
@@ -197,6 +198,8 @@ const Products: React.FunctionComponent<{
   productsCount: number;
 }> = ({ products, images, meta, productsCount }) => {
   const [page, setPage] = useState(0);
+  const { t } = useI18n();
+  const contactText = t("contact", meta?.contact ?? "إتصل بنا");
 
   return (
     <>
@@ -210,8 +213,8 @@ const Products: React.FunctionComponent<{
           site_name: meta.name,
         }}
       />
-      <MenuBar />
-      <PageHeadline>قوالب و إضافات</PageHeadline>
+  <MenuBar />
+  <PageHeadline>{t("products.headline", meta?.headline ?? "قوالب و إضافات")}</PageHeadline>
       <SWRConfig
         value={{ fallback: { "/api/products?page=0": { products, images } } }}
       >
@@ -236,7 +239,7 @@ const Products: React.FunctionComponent<{
             }}
             onClick={() => setPage(page - 1)}
           >
-            <span> السابق </span>
+            <span>{t("pagination.prev", "السابق")}</span>
             <ArrowLeftIcon />
           </Button>
         ) : (
@@ -256,12 +259,12 @@ const Products: React.FunctionComponent<{
             }}
             onClick={() => setPage(page + 1)}
           >
-            <span> التالي </span>
+            <span>{t("pagination.next", "التالي")}</span>
             <ArrowRightIcon />
           </Button>
         )}
       </Box>
-      <Footer {...meta} />
+  <Footer {...meta} contact={contactText} />
     </>
   );
 };

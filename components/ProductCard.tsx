@@ -5,6 +5,7 @@ import Image from "next/image";
 import { styled, Box } from "../stitches.config";
 import type { Prisma } from "@prisma/client";
 import { currencyCodeToSymbol } from "../lib/stripeHelpers";
+import { useI18n } from "../lib/i18n";
 
 import PlaceholderImage from "../public/placeholder.png";
 
@@ -23,6 +24,7 @@ const ProductName = styled("div", {
   color: "$crimson12",
   fontSize: "16px",
   marginRight: "$1",
+  marginLeft: "$1",
 });
 
 const ProductPrice = styled("div", {
@@ -36,6 +38,7 @@ const ProductBrand = styled("div", {
   color: "$crimson11",
   fontSize: "12px",
   marginRight: "$1",
+  marginLeft: "$1",
 });
 
 const ImageContainer = styled("div", {
@@ -73,6 +76,14 @@ const ProductCard: React.FunctionComponent<{
     };
   };
 }> = ({ product, images }) => {
+  const { locale } = useI18n();
+
+  // DB fields: `name` holds Arabic; `name_en` holds English. Choose per-locale
+  // Use `name_en` when locale is 'en', otherwise use `name`. Always fall back to `name`.
+  const localizedName = locale === "en" ? (product as any).name_en || product.name : product.name;
+  const localizedBrandName =
+    locale === "en" ? (product.brand as any).name_en || product.brand.name : product.brand.name;
+
   return (
     <Wrapper>
       <StyledLink href={`/products/${product.slug}`}>
@@ -127,8 +138,8 @@ const ProductCard: React.FunctionComponent<{
           }}
         >
           <div>
-            <ProductBrand>{product.brand.name}</ProductBrand>
-            <ProductName>{product.name}</ProductName>
+            <ProductBrand>{localizedBrandName}</ProductBrand>
+            <ProductName>{localizedName}</ProductName>
           </div>
           <ProductPrice>
             {currencyCodeToSymbol(product.currency)} {product.price / 100}

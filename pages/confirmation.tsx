@@ -2,7 +2,7 @@ import { styled, Box } from "../stitches.config";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { fetchGetJSON } from "../lib/fetcher";
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { NextSeo } from "next-seo";
 import { GetStaticProps, NextPage } from "next";
 import Image from "next/image";
@@ -14,7 +14,7 @@ import SuccessImage from "../public/jason-dent-WNVGLwGMCAg-unsplash.jpg";
 import PageHeadline from "../components/PageHeadline";
 
 const ImageContainer = styled("div", {
-  height: "54vh",
+  height: "64vh",
   position: "relative",
   marginLeft: "calc($4*-1)",
   marginRight: "calc($4*-1)",
@@ -23,36 +23,10 @@ const ImageContainer = styled("div", {
   transition: "1s",
 });
 
-const ProductName = styled("h1", {
-  all: "unset",
-  fontSize: "$4",
-  lineHeight: "30px",
-  color: "$crimson12",
-  fontFamily: "Work Sans, sans-serif",
-});
-
-const ProductPrice = styled("div", {
-  fontSize: "$4",
-  color: "$mauve12",
-  fontFamily: "Work Sans, sans-serif",
-  display: "grid",
-  placeContent: "center",
-});
-
-const ProductBrand = styled("div", {
-  color: "$mauve8",
-  paddingTop: "$4",
-});
-
 const ProductDescription = styled("p", {
-  color: "$crimson11",
+  // color: "$crimson11",
   fontSize: "16px",
   lineHeight: "24px",
-});
-
-const AnimatedImage = styled(Image, {
-  transition: "opacity .3s ease, filter .3s ease",
-  transitionDelay: "120ms",
 });
 
 const LayoutWrapper = styled("div", {
@@ -74,9 +48,9 @@ const LayoutWrapper = styled("div", {
 
 const Subheadline = styled("h1", {
   fontFamily: "Roboto, sans serif",
-  fontSize: "18px",
+  fontSize: "16px",
   fontWeight: "normal",
-  color: "$mauve9",
+  // color: "$crimson11",
 });
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -105,12 +79,48 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
   const { dispatch } = useCart();
   const router = useRouter();
 
-  const { data, error } = useSWR(
+  const { data: stripeData, error: stripeError } = useSWR(
     router.query.session_id
       ? `/api/checkout_sessions/${router.query.session_id}`
       : null,
     fetchGetJSON,
   );
+
+  const [paypalData, setPaypalData] = useState<any | null>(null);
+  const [paypalError, setPaypalError] = useState<string | null>(null);
+  const capturedRef = useRef(false);
+
+  useEffect(() => {
+    // If the return from PayPal includes a `token` query param, capture the order.
+    const token = router.query.token as string | undefined;
+    if (!token) return;
+
+    // Ensure router is ready and we haven't already attempted capture
+    if (!router.isReady) return;
+    if (capturedRef.current) return;
+    capturedRef.current = true;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/paypal/capture", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
+
+        if (!res.ok) {
+          const txt = await res.text();
+          setPaypalError(txt || `Capture failed with status ${res.status}`);
+          return;
+        }
+
+        const json = await res.json();
+        setPaypalData(json);
+      } catch (err: any) {
+        setPaypalError(String(err?.message ?? err));
+      }
+    })();
+  }, [router.query.token, router.isReady]);
 
   useEffect(() => {
     // If checkout is completed, the cart should be cleared.
@@ -144,15 +154,93 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
         />
       </ImageContainer>
       <Box as="main" css={{ paddingBottom: "$3" }}>
-        <PageHeadline>
-          {error && <span>Your payment could not be verified.</span>}
-          {data && <span>Awesome! That worked!</span>}
-        </PageHeadline>
-        {data && (
+        <Box css={{ textAlign: "center" }}>
+          <PageHeadline>
+            {(stripeError || paypalError) && (
+              <span>تعذّر التحقق من دفعتك.</span>
+            )}
+            {(stripeData || paypalData) && <span>شكرا! تم الدفع بنجاح.</span>}
+          </PageHeadline>
+        </Box>
+
+        {/* Stripe success */}
+        {stripeData && (
           <Subheadline>
-            This is your order reference:{" "}
-            <strong>{data.payment_intent.id}</strong>
+            مرجع طلبك: (الرجاء الاحتفاظ به لأي استفسار أو مشكل)
+            <br />
+            <strong>{stripeData.payment_intent.id}</strong>
           </Subheadline>
+        )}
+
+        {/* PayPal success */}
+        {paypalData && (
+          <div>
+            {/* Products list: show all products and quantities in format `name x quantity`. */}
+            {(() => {
+              if (!paypalData) return null;
+
+              const lines: string[] = [];
+              const orderObj = paypalData.order ?? paypalData;
+              const pus =
+                orderObj?.purchase_units ?? paypalData.purchase_units ?? [];
+
+              pus.forEach((pu: any) => {
+                (pu.items ?? []).forEach((it: any) => {
+                  const name = it?.name;
+                  const qty =
+                    it?.quantity ??
+                    (it?.quantity?.toString ? it.quantity.toString() : "1");
+                  if (name) lines.push(`${name} x ${qty}`);
+                });
+              });
+
+              // fallback to simple server-provided names (no quantity info) -> assume qty 1
+              if (lines.length === 0 && Array.isArray(paypalData.items)) {
+                paypalData.items.forEach((n: string) => {
+                  if (n) lines.push(`${n} x 1`);
+                });
+              }
+
+              if (lines.length === 0) return null;
+
+              return (
+                <ProductDescription>
+                  المنتجات:
+                  <br />
+                  {lines.map((line, idx) => (
+                    <span key={`pp-item-${idx}`}>
+                      <strong>{line}</strong>
+                      {idx < lines.length - 1 ? (
+                        <>
+                          <br />
+                        </>
+                      ) : null}
+                    </span>
+                  ))}
+                </ProductDescription>
+              );
+            })()}
+
+            {/* Show payer info if available */}
+            {paypalData.payer && (
+              <ProductDescription>
+                اسم المشتري:{" "}
+                <strong>
+                  {paypalData.payer.name?.given_name}{" "}
+                  {paypalData.payer.name?.surname}
+                </strong>
+                <br />
+                البريد الإلكتروني:{" "}
+                <strong>{paypalData.payer.email_address}</strong>
+                <br />
+                مرجع طلبك:{" "}
+                <strong>
+                  {paypalData.id ||
+                    paypalData.purchase_units?.[0]?.payments?.captures?.[0]?.id}
+                </strong>
+              </ProductDescription>
+            )}
+          </div>
         )}
       </Box>
       <MenuBar />

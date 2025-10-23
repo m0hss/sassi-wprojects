@@ -17,6 +17,7 @@ import { NextSeo } from "next-seo";
 import { getPlaiceholder } from "plaiceholder";
 import { sanitizeHtml } from "../../lib/sanitize";
 import { Cross1Icon } from "@radix-ui/react-icons";
+import { useI18n } from "../../lib/i18n";
 
 // use shared prisma client from lib/prisma
 
@@ -240,6 +241,23 @@ const DemoCaption = styled("h2", {
   fontFamily: "Cairo, sans-serif",
 });
 
+const DemoGrid = styled("div", {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+  gap: "$3",
+  alignItems: "stretch",
+});
+
+const DemoTile = styled("div", {
+  position: "relative",
+  width: "100%",
+  aspectRatio: "4 / 3",
+  borderRadius: 6,
+  overflow: "hidden",
+  // make sure the tile doesn't get too tall on very large screens
+  maxHeight: 360,
+});
+
 const AnimatedImage = styled(Image, {
   transition: "opacity .3s ease, filter .3s ease",
   transitionDelay: "120ms",
@@ -276,6 +294,7 @@ const ProductPage: NextPage<{
   meta: Tmeta;
 }> = ({ product, images, meta }) => {
   const { cart, dispatch } = useCart();
+  const { t, locale } = useI18n();
   const [lightbox, setLightbox] = useState<{
     src: string;
     blur?: string;
@@ -306,8 +325,10 @@ const ProductPage: NextPage<{
     });
   };
 
-  // sanitize HTML description before rendering (reuse shared helper)
-  const safeDescription = sanitizeHtml(product?.description || "");
+  // Prefer English description when available (DB field `description_en`),
+  // otherwise fall back to `description`. Sanitize before rendering.
+  const rawDescription = locale === "en" ? (product as any).description_en || product.description : product.description;
+  const safeDescription = sanitizeHtml(rawDescription || "");
 
   const isSpecialBrand = product?.brand?.id === 3;
 
@@ -353,7 +374,7 @@ const ProductPage: NextPage<{
         )}
       </ImageContainer>
       <Box as="main" css={{ paddingBottom: "$3" }}>
-        <ProductBrand>{product.brand.name}</ProductBrand>
+  <ProductBrand>{locale === "en" ? (product.brand as any).name_en || product.brand.name : product.brand.name}</ProductBrand>
         <Box
           css={{
             display: "flex",
@@ -362,12 +383,12 @@ const ProductPage: NextPage<{
             justifyContent: "space-between",
           }}
         >
-          <ProductName>{product.name}</ProductName>
+          <ProductName>{locale === "en" ? (product as any).name_en || product.name : product.name}</ProductName>
           {images.length ? (
             <Button
               onClick={() => {
                 const previewUrl = (product as any).url as string | undefined;
-                if (previewUrl) {
+                  if (previewUrl) {
                   // open product preview URL in a new tab (simple behavior)
                   window.open(previewUrl, "_blank");
                 } else {
@@ -377,9 +398,9 @@ const ProductPage: NextPage<{
                   });
                 }
               }}
-              aria-label="Preview product image"
+                aria-label={t("preview", "معاينة")}
             >
-              معاينة
+                {t("preview", "معاينة")}
             </Button>
           ) : null}
         </Box>
@@ -390,75 +411,45 @@ const ProductPage: NextPage<{
         {/* Demo gallery: show up to 4 demo images (prefer images[1..4]) */}
         {!isSpecialBrand ? (
           <>
-            <DemoCaption>صور {product.name}</DemoCaption>
+            <DemoCaption>{t("demo.images", "صور")} {locale === "en" ? (product as any).name_en || product.name : product.name}</DemoCaption>
             <DemoSection>
-              <Box
-                css={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, 1fr)",
-                  gap: "$3",
-                }}
-              >
+              <DemoGrid>
                 {(() => {
-                  // build an array of up to 4 images: prefer images[1..], else use images[0], else placeholder
-                  const demoCandidates: {
-                    path: string;
-                    blurDataURL?: string;
-                  }[] = [];
+                  const demoCandidates: { path: string; blurDataURL?: string }[] = [];
                   if (images.length > 1) {
-                    // take images[1..4] (or fewer if not available)
-                    for (let i = 1; i <= 6 && i < images.length; i++)
-                      demoCandidates.push(images[i]);
+                    // take images[1..6]
+                    for (let i = 1; i <= 6 && i < images.length; i++) demoCandidates.push(images[i]);
                   }
-                  // if no images beyond the main, but we have at least one, duplicate the main as fallback
-                  if (demoCandidates.length === 0 && images.length > 0)
-                    demoCandidates.push(images[0]);
+                  if (demoCandidates.length === 0 && images.length > 0) demoCandidates.push(images[0]);
 
-                  // ensure we have up to 4 slots; if still empty push a placeholder marker
-                  while (
-                    demoCandidates.length < 6 &&
-                    demoCandidates.length <
-                      (images.length > 0 ? images.length : 1)
-                  ) {
-                    // noop - avoid infinite loop; this while only ensures we don't exceed 4
-                    break;
-                  }
-
-                  // render up to 4 tiles; if demoCandidates is empty show single placeholder tile
                   if (demoCandidates.length === 0) {
                     return (
-                      <Image
-                        src={PlaceholderImage}
-                        width={400}
-                        height={300}
-                        // placeholder demo tile
-                        sizes="(max-width: 640px) 100vw, 33vw"
-                        style={{ objectFit: "cover" }}
-                        alt="placeholder"
-                      />
+                      <DemoTile>
+                        <Image
+                          src={PlaceholderImage}
+                          alt="placeholder"
+                          fill
+                          style={{ objectFit: "cover" }}
+                        />
+                      </DemoTile>
                     );
                   }
 
                   return demoCandidates.slice(0, 6).map((img, idx) => (
-                    <AnimatedImage
-                      key={idx}
-                      src={img.path}
-                      width={400}
-                      height={300}
-                      // demo tiles live in a grid; hint responsive sizes
-                      sizes="(max-width: 640px) 100vw, 33vw"
-                      style={{ objectFit: "cover" }}
-                      alt={`${product.name} demo ${idx + 1}`}
-                      placeholder={img.blurDataURL ? "blur" : undefined}
-                      blurDataURL={img.blurDataURL}
-                      css={{ cursor: "pointer", borderRadius: 6 }}
-                      onClick={() =>
-                        setLightbox({ src: img.path, blur: img.blurDataURL })
-                      }
-                    />
+                    <DemoTile key={idx} onClick={() => setLightbox({ src: img.path, blur: img.blurDataURL })}>
+                      <AnimatedImage
+                        src={img.path}
+                        alt={`${product.name} demo ${idx + 1}`}
+                        placeholder={img.blurDataURL ? "blur" : undefined}
+                        blurDataURL={img.blurDataURL}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        css={{ cursor: "pointer" }}
+                      />
+                    </DemoTile>
                   ));
                 })()}
-              </Box>
+              </DemoGrid>
             </DemoSection>
           </>
         ) : null}
@@ -538,12 +529,12 @@ const ProductPage: NextPage<{
             <ProductPrice>
               {currencyCodeToSymbol(product.currency)} {product.price / 100}
             </ProductPrice>
-            <Button onClick={handleAddToCart}>أضف إلى سلة التسوق</Button>
+            <Button onClick={handleAddToCart}>{t("add_to_cart", "أضف إلى سلة التسوق")}</Button>
           </Box>
         ) : null}
       </Box>
-      <MenuBar />
-      <Footer {...meta} />
+  <MenuBar />
+  <Footer {...meta} contact={t("contact", meta?.contact ?? "إتصل بنا")} />
     </LayoutWrapper>
   );
 };

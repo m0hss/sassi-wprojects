@@ -20,7 +20,7 @@ const PageHeadline: React.FunctionComponent<PageHeadlineProps> = ({ children }) 
   <Box
     css={{
       borderBottom: "1px solid $mauve4",
-      paddingLeft: "$4",
+      paddingLeft: "$5",
       marginLeft: "-$4",
       paddingRight: "$5",
       marginRight: "-$4",

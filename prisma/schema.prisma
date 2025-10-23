@@ -13,6 +13,8 @@ model Product {
   updatedAt   DateTime @updatedAt
   slug        String
   name        String
+  name_en     String?
+  description_en String? @db.Text
   description String   @db.Text
   price       Int
   currency    String
@@ -26,5 +28,6 @@ model Product {
 model Brand {
   id       Int       @id @default(autoincrement())
   name     String
+  name_en  String?
   products Product[]
 }
