@@ -78,11 +78,25 @@ const ProductCard: React.FunctionComponent<{
 }> = ({ product, images }) => {
   const { locale } = useI18n();
 
-  // DB fields: `name` holds Arabic; `name_en` holds English. Choose per-locale
-  // Use `name_en` when locale is 'en', otherwise use `name`. Always fall back to `name`.
-  const localizedName = locale === "en" ? (product as any).name_en || product.name : product.name;
-  const localizedBrandName =
-    locale === "en" ? (product.brand as any).name_en || product.brand.name : product.brand.name;
+  // DB fields: `name` holds Arabic; `name_en` holds English. Compute localized
+  // values on the client in an effect so they reliably update after hydration
+  // when the locale changes (avoids any subtle timing/hydration issues).
+  const [localizedName, setLocalizedName] = useState<string>(
+    (product as any).name_en || product.name,
+  );
+  const [localizedBrandName, setLocalizedBrandName] = useState<string>(
+    (product.brand as any)?.name_en || product.brand.name,
+  );
+
+  useEffect(() => {
+    const name = locale === "en" ? (product as any).name_en || product.name : product.name;
+    setLocalizedName(name);
+
+    const brandName = locale === "en"
+      ? (product.brand as any)?.name_en || product.brand.name
+      : product.brand.name;
+    setLocalizedBrandName(brandName);
+  }, [locale, (product as any).name_en, product.name, (product.brand as any)?.name_en, (product.brand as any)?.name]);
 
   // determine brand id (try nested brand.id first, then product.brandId)
   const brandId = (product.brand as any)?.id ?? (product as any).brandId ?? null;

@@ -50,30 +50,20 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
   // is still respected for subsequent visits only when they explicitly set it.
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // Prefer an explicit user choice stored in localStorage when available.
+    // Keep NEXT_PUBLIC_DEFAULT_LOCALE as the SSR/build-time initial value only.
     const stored = (localStorage.getItem("locale") as Locale) || null;
-
-    const envDefault = (process.env.NEXT_PUBLIC_DEFAULT_LOCALE as Locale) || null;
-
-    // If env default exists, always use it on first mount (override stored/nav)
-    if (envDefault) {
-      if (envDefault !== locale) {
-        setLocaleState(envDefault);
-      }
-      return;
-    }
-
-    // No env default: fall back to stored, then navigator language
     if (stored) {
-      if (stored !== locale) {
-        setLocaleState(stored);
-      }
+      if (stored !== locale) setLocaleState(stored);
       return;
     }
 
+    // If no stored preference, fall back to navigator language, then build default.
     const nav = navigator.language || "";
     const navLocale: Locale = nav.startsWith("en") ? "en" : "ar";
     if (navLocale !== locale) {
       setLocaleState(navLocale);
+      return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run once on mount
