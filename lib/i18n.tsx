@@ -48,6 +48,14 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
       setLocaleState(stored);
       return;
     }
+
+    // Prefer an explicit deploy-time default if provided (set NEXT_PUBLIC_DEFAULT_LOCALE in Vercel)
+    const envDefault = (process.env.NEXT_PUBLIC_DEFAULT_LOCALE as Locale) || null;
+    if (envDefault && envDefault !== locale) {
+      setLocaleState(envDefault);
+      return;
+    }
+
     const nav = navigator.language || "";
     const navLocale: Locale = nav.startsWith("en") ? "en" : "ar";
     if (navLocale !== locale) {
