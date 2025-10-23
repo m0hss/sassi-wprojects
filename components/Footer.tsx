@@ -6,6 +6,8 @@ import {
   ChatBubbleIcon,
   PaperPlaneIcon,
 } from "@radix-ui/react-icons";
+import Image from "next/image";
+
 
 const Wrapper = styled("footer", {
   padding: "$4",
@@ -149,19 +151,19 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
         }}
       >
         <PaymentLogo>
-          <img src="/payments/bitcoin.svg" alt="Bitcoin" />
+          <Image src="/payments/bitcoin.svg" alt="Bitcoin" />
         </PaymentLogo>
         <PaymentLogo>
-          <img src="/payments/visa.svg" alt="Visa" />
+          <Image src="/payments/visa.svg" alt="Visa" />
         </PaymentLogo>
         <PaymentLogo>
-          <img src="/payments/mastercard.svg" alt="Mastercard" />
+          <Image src="/payments/mastercard.svg" alt="Mastercard" />
         </PaymentLogo>
         <PaymentLogo>
-          <img src="/payments/paypal.svg" alt="PayPal" />
+          <Image src="/payments/paypal.svg" alt="PayPal" />
         </PaymentLogo>
         <PaymentLogo>
-          <img src="/payments/bancontact.svg" alt="Bancontact" />
+          <Image src="/payments/bancontact.svg" alt="Bancontact" />
         </PaymentLogo>
       </Box>
     </Wrapper>
