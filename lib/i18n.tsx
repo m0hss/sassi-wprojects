@@ -29,8 +29,15 @@ async function loadMessages(locale: Locale): Promise<Messages> {
 
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window === "undefined") return "en";
-    return (localStorage.getItem("locale") as Locale) || (navigator.language?.startsWith("ar") ? "ar" : "en");
+    // Default to Arabic on the server to ensure SSR uses Arabic by default.
+    if (typeof window === "undefined") return "ar";
+    // On the client prefer an explicit user setting stored in localStorage.
+    const stored = (localStorage.getItem("locale") as Locale) || null;
+    if (stored) return stored;
+    // If navigator explicitly indicates English, allow that; otherwise default to Arabic.
+    const nav = navigator.language || "";
+    if (nav.startsWith("en")) return "en";
+    return "ar";
   });
 
   const [messages, setMessages] = useState<Messages>({});
