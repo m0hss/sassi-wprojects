@@ -12,6 +12,7 @@ import { Tmeta } from "../types";
 import Footer from "../components/Footer";
 import SuccessImage from "../public/jason-dent-WNVGLwGMCAg-unsplash.jpg";
 import PageHeadline from "../components/PageHeadline";
+import { useI18n } from "../lib/i18n";
 
 const ImageContainer = styled("div", {
   height: "64vh",
@@ -77,6 +78,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
   const { dispatch } = useCart();
+  const { t } = useI18n();
   const router = useRouter();
 
   const { data: stripeData, error: stripeError } = useSWR(
@@ -149,7 +151,7 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
           style={{ objectFit: "cover" }}
           // full-bleed success image
           sizes="100vw"
-          alt="success image"
+          alt={t("confirmation.success_image_alt")}
           placeholder="blur"
         />
       </ImageContainer>
@@ -157,16 +159,18 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
         <Box css={{ textAlign: "center" }}>
           <PageHeadline>
             {(stripeError || paypalError) && (
-              <span>تعذّر التحقق من دفعتك.</span>
+              <span>{t("confirmation.payment_error")}</span>
             )}
-            {(stripeData || paypalData) && <span>شكرا! تم الدفع بنجاح.</span>}
+            {(stripeData || paypalData) && (
+              <span>{t("confirmation.payment_success")}</span>
+            )}
           </PageHeadline>
         </Box>
 
         {/* Stripe success */}
         {stripeData && (
           <Subheadline>
-            مرجع طلبك: (الرجاء الاحتفاظ به لأي استفسار أو مشكل)
+            {t("confirmation.order_ref_label")} {t("confirmation.order_ref_instructions")}
             <br />
             <strong>{stripeData.payment_intent.id}</strong>
           </Subheadline>
@@ -205,7 +209,7 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
 
               return (
                 <ProductDescription>
-                  المنتجات:
+                  {t("confirmation.products_label")}
                   <br />
                   {lines.map((line, idx) => (
                     <span key={`pp-item-${idx}`}>
@@ -223,17 +227,17 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
 
             {/* Show payer info if available */}
             {paypalData.payer && (
-              <ProductDescription>
-                اسم المشتري:{" "}
+                <ProductDescription>
+                {t("confirmation.buyer_name_label")} {" "}
                 <strong>
-                  {paypalData.payer.name?.given_name}{" "}
+                  {paypalData.payer.name?.given_name} {" "}
                   {paypalData.payer.name?.surname}
                 </strong>
                 <br />
-                البريد الإلكتروني:{" "}
+                {t("confirmation.email_label")} {" "}
                 <strong>{paypalData.payer.email_address}</strong>
                 <br />
-                مرجع طلبك:{" "}
+                {t("confirmation.order_ref_label")} {" "}
                 <strong>
                   {paypalData.id ||
                     paypalData.purchase_units?.[0]?.payments?.captures?.[0]?.id}

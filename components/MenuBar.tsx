@@ -109,6 +109,7 @@ const StyledSwitch = styled(Switch.Root, {
   height: 25,
   backgroundColor: "$crimson8",
   borderRadius: "9999px",
+  marginLeft: "$1",
   position: "relative",
   WebkitTapHighlightColor: "rgba(0, 0, 0, 0)",
   "&:focus": { boxShadow: `0 0 0 2px $crimson9` },
@@ -143,6 +144,38 @@ const LangSelect = styled("select", {
   border: "1px solid $mauve5",
   background: "$mauve1",
   color: "$crimson12",
+});
+
+const FlagButton = styled("button", {
+  all: "unset",
+  width: 34,
+  height: 22,
+  padding: 2,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: 6,
+  cursor: "pointer",
+  border: "1px solid transparent",
+  '&:hover': { background: "$mauve3" },
+  '&:focus': { boxShadow: "0 0 0 2px $mauve8" },
+  variants: {
+    selected: {
+      true: {
+        opacity: 1,
+      },
+      false: {
+        opacity: 0.6,
+      },
+    },
+  },
+});
+
+const FlagImg = styled("img", {
+  width: 24,
+  height: 16,
+  objectFit: "cover",
+  display: "block",
 });
 // Create a separate styled component for Link
 const StyledLink = styled(Link, {
@@ -200,8 +233,8 @@ const MenuBar: React.FunctionComponent = () => {
             </Item>
           </MenuBarBox>
           <StyledContent side="top">
-            <Flex css={{  gap: "$5" }}>
-              <Flex css={{ alignItems: "center", cursor: "pointer"}}>
+            <Flex css={{ gap: "$5" }}>
+              <Flex css={{ alignItems: "center", cursor: "pointer" }}>
                 <Label htmlFor="s1" css={{ paddingRight: 8, paddingLeft: 0 }}>
                   {t("menu.appearance", "المظهر")}
                 </Label>
@@ -216,16 +249,29 @@ const MenuBar: React.FunctionComponent = () => {
                 </StyledSwitch>
               </Flex>
               <Flex css={{ alignItems: "center", cursor: "pointer" }}>
-                <Label css={{ paddingRight: 8, paddingLeft: 0 }}>{t("menu.language", "اللغة")}</Label>
-                <LangSelect
-                  css={{ marginLeft: 6 }}
-                  aria-label="Select language"
-                  value={locale}
-                  onChange={(e) => setLocale(e.target.value as any)}
-                >
-                  <option value="en">{t("lang.en", "English")}</option>
-                  <option value="ar">{t("lang.ar", "العربية")}</option>
-                </LangSelect>
+                <Label css={{ paddingRight: 8, paddingLeft: 0 }}>
+                  {t("menu.language", "اللغة")}
+                </Label>
+                <Flex role="group" aria-label={t("menu.language", "اللغة") + " options"}>
+                  <FlagButton
+                    selected={locale === "en"}
+                    aria-pressed={locale === "en"}
+                    aria-label={t("lang.en", "English")}
+                    onClick={() => setLocale("en")}
+                    title={t("lang.en", "English")}
+                  >
+                    <FlagImg src="/flags/en.svg" alt={t("lang.en", "English")} />
+                  </FlagButton>
+                  <FlagButton
+                    selected={locale === "ar"}
+                    aria-pressed={locale === "ar"}
+                    aria-label={t("lang.ar", "العربية")}
+                    onClick={() => setLocale("ar")}
+                    title={t("lang.ar", "العربية")}
+                  >
+                    <FlagImg src="/flags/pl.svg" alt={t("lang.ar", "العربية")} />
+                  </FlagButton>
+                </Flex>
               </Flex>
             </Flex>
             {/* <Popover.Close /> */}

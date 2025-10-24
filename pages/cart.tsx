@@ -12,6 +12,7 @@ import { Tmeta } from "../types";
 import MenuBar from "../components/MenuBar";
 import { NextSeo } from "next-seo";
 import { useEffect, useState } from "react";
+import { useI18n } from "../lib/i18n";
 
 export const getStaticProps: GetStaticProps = async () => {
   /**
@@ -63,6 +64,7 @@ const PaymentMethod = styled("label", {
 
 const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
   const { cart, productsTotal } = useCart();
+  const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [total, setTotal] = useState(productsTotal);
@@ -108,9 +110,9 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
 
   return (
     <>
-      <NextSeo title={`اتمام الطلب - ${meta.headline}`} noindex={true} />
+  <NextSeo title={`${t("checkout.title")} - ${meta.headline}`} noindex={true} />
       <MenuBar />
-      <PageHeadline>اتمام الطلب</PageHeadline>
+  <PageHeadline>{t("checkout.title")}</PageHeadline>
 
       <>
         {cart.length ? (
@@ -121,11 +123,11 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                 color: "$crimson11",
                 fontSize: "16px",
                 marginRight: "$1",
+                marginLeft: "$1",
                 fontWeight: 600,
               }}
             >
-              القوالب و الاضافات، التفاصيل و تعليمات التثبيت ترسل عبر البريد
-              الالكتروني، للمزيد من المساعدة يرجى التواصل معنا.
+              {t("checkout.instructions")}
             </Box>
             <ProductList>
               {cart.map((item) => (
@@ -145,16 +147,18 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   marginBottom: "$2",
                   fontWeight: 600,
                   marginRight: "$1",
+                  marginLeft: "$1",
                   color: "$crimson11",
                 }}
               >
-                عنوان البريد الإلكتروني (ضروري)
+                {t("checkout.email_label")}
               </Box>
               <Box
                 css={{
                   marginLeft: "-$2",
                   marginRight: "-$4",
                   paddingRight: "$4",
+                  paddingLeft: "$4",
                   borderTop: "1px solid $mauve6",
                   borderBottom: "1px solid $mauve6",
                   borderLeft: "none",
@@ -166,7 +170,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="أدخل بريدك الإلكتروني هنا"
+                  placeholder={t("checkout.email_placeholder")}
                   required
                   css={{
                     width: "calc(100% - 22px)",
@@ -183,6 +187,16 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                       fontFamily: "Cairo, sans-serif",
                       fontSize: "16px",
                     },
+                      // Remove visible focus styles (keeps functionality but hides outline/box-shadow)
+                      "&:focus": {
+                        outline: "none",
+                        boxShadow: "none",
+                      },
+                      // Also target focus-visible for browsers that support it
+                      "&:focus-visible": {
+                        outline: "none",
+                        boxShadow: "none",
+                      },
                   }}
                 />
               </Box>
@@ -193,32 +207,35 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   css={{
                     color: "$crimson14",
                     marginTop: "$2",
-                    // marginRight: "$1",
+                    marginRight: "$1",
+                    marginLeft: "$1",
                     fontSize: "14px",
                   }}
                 >
-                  الرجاء إدخال بريد إلكتروني صالح لإتمام الطلب.
+                  {t("checkout.email_invalid")}
                 </Box>
               ) : null}
             </Box>
             <Box css={{ padding: "$3 0" }}>
-              <Box
+                <Box
                 as="label"
                 css={{
                   display: "block",
                   marginBottom: "$2",
                   fontWeight: 600,
                   marginRight: "$1",
+                  marginLeft: "$1",
                   color: "$crimson11",
                 }}
               >
-                طريقة الدفع
+                {t("checkout.payment_method")}
               </Box>
               <Box
                 css={{
                   marginLeft: "-$2",
                   marginRight: "-$4",
                   paddingRight: "$4",
+                  paddingLeft: "$4",
                   borderTop: "1px solid $mauve6",
                   borderBottom: "1px solid $mauve6",
                   borderLeft: "none",
@@ -233,7 +250,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                     checked={paymentMethod === "stripe"}
                     onChange={() => setPaymentMethod("stripe")}
                   />
-                  Debit or Credit Card
+                  {t("payment.card")}
                 </PaymentMethod>
                 <PaymentMethod>
                   <input
@@ -243,7 +260,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                     checked={paymentMethod === "paypal"}
                     onChange={() => setPaymentMethod("paypal")}
                   />
-                  PayPal
+                  {t("payment.paypal")}
                 </PaymentMethod>
                 <PaymentMethod>
                   <input
@@ -253,7 +270,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                     checked={paymentMethod === "bancontact"}
                     onChange={() => setPaymentMethod("bancontact")}
                   />
-                  Bancontact
+                  {t("payment.bancontact")}
                 </PaymentMethod>
                 <PaymentMethod>
                   <input
@@ -263,7 +280,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                     checked={paymentMethod === "Bitcoin"}
                     onChange={() => setPaymentMethod("Bitcoin")}
                   />
-                  Bitcoin
+                  {t("payment.bitcoin")}
                 </PaymentMethod>
               </Box>
             </Box>
@@ -285,9 +302,10 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                   css={{
                     color: "$crimson11",
                     marginRight: "$1",
+                    marginLeft: "$1",
                   }}
                 >
-                  المجموع:
+                  {t("checkout.total_label")}
                   {/* Get the currency code of the first item for now. */}
                 </Box>
                 <Box
@@ -296,6 +314,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                     color: "$crimson12",
                     fontSize: "22px",
                     marginRight: "$1",
+                    marginLeft: "$1",
                   }}
                 >
                   {currencyCodeToSymbol(cart[0].product.currency)} {total / 100}
@@ -308,7 +327,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
                 }
                 onClick={handleCheckout}
               >
-                {isLoading ? <Loading /> : "شراء الآن"}
+                {isLoading ? <Loading /> : t("checkout.buy_now")}
               </Button>
             </Box>
           </>
@@ -321,8 +340,7 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
               textAlign: "center",
             }}
           >
-            {" "}
-            أضف المادة إلى سلة التسوق الخاصة بك!
+            {t("checkout.cart_empty")}
           </div>
         )}
       </>

@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import Layout from "../components/Layout";
 import Button, { Loading } from "../components/Button";
 import { useState } from "react";
+import { useI18n } from "../lib/i18n";
 import { Tmeta } from "../types";
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -62,6 +63,9 @@ const Textarea = styled("textarea", {
 });
 
 const ContactPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
+  const { t, locale } = useI18n();
+  const contactText = t("contact", meta?.contact ?? "") || meta?.contact;
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -75,25 +79,49 @@ const ContactPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
     setSuccess("");
 
     if (!name.trim() || !email.trim() || !message.trim()) {
-      setError("الرجاء ملء جميع الحقول.");
+      setError(t("contact.error_fill", "Please fill all fields."));
       return;
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError("الرجاء إدخال بريد إلكتروني صالح.");
+      setError(t("contact.error_email", "Please enter a valid email."));
       return;
     }
 
     setIsLoading(true);
     try {
-      // For now do a client-only fake submit. Integrate with an API route later.
-      await new Promise((r) => setTimeout(r, 700));
-      setSuccess("تم إرسال رسالتك بنجاح. سنرد عليك عبر البريد الإلكتروني.");
+      // Call the contact API endpoint to send email via Resend
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(
+          data.error || t("contact.error_send", "Failed to send message"),
+        );
+        return;
+      }
+
+      setSuccess(
+        t(
+          "contact.success",
+          "Your message was sent successfully. We'll reply by email.",
+        ),
+      );
       setName("");
       setEmail("");
       setMessage("");
     } catch (err) {
-      setError("حدث خطأ أثناء إرسال الرسالة. حاول لاحقًا.");
+      setError(
+        t(
+          "contact.error_network",
+          "An error occurred while sending. Please try again.",
+        ),
+      );
     } finally {
       setIsLoading(false);
     }
@@ -104,59 +132,74 @@ const ContactPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
       <NextSeo title={`اتصل بنا - ${meta.headline}`} />
       <MenuBar />
       <Box css={{ textAlign: "center" }}>
-        <PageHeadline>اتصل بنا</PageHeadline>
+        <PageHeadline>{t("contact", "Contact")}</PageHeadline>
       </Box>
 
       <Box>
-        <Form onSubmit={handleSubmit} dir="rtl">
+        <Form onSubmit={handleSubmit} dir={locale === "ar" ? "rtl" : "ltr"}>
           <div style={{ padding: "0 25px" }}>
-            <Label htmlFor="name">الاسم</Label>
+            <Label htmlFor="name">{t("contact.name", "Name")}</Label>
 
             <Input
               id="name"
               name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              // placeholder="الاسم الكامل"
-              aria-label="الاسم"
+              // placeholder={t("contact.name_placeholder", "Full name")}
+              aria-label={t("contact.name", "Name")}
             />
           </div>
 
           <div style={{ padding: "0 25px" }}>
-            <Label htmlFor="email">البريد الإلكتروني</Label>
+            <Label htmlFor="email">{t("contact.email", "Email")}</Label>
             <Input
               id="email"
               name="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              // placeholder="you@example.com"
-              aria-label="البريد الإلكتروني"
+              // placeholder={t("contact.email_placeholder", "you@example.com")}
+              aria-label={t("contact.email", "Email")}
             />
           </div>
 
           <div style={{ padding: "0 25px" }}>
-            <Label htmlFor="message">الرسالة</Label>
+            <Label htmlFor="message">{t("contact.message", "Message")}</Label>
             <Textarea
               id="message"
               name="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="اكتب رسالتك هنا..."
-              aria-label="الرسالة"
+              placeholder={t(
+                "contact.placeholder_message",
+                "Write your message here...",
+              )}
+              aria-label={t("contact.message", "Message")}
             />
           </div>
 
           {error ? (
             <Box
-              css={{ color: "$crimson11", fontWeight: 600, marginRight: "$2" }}
+              css={{
+                color: "$crimson11",
+                fontWeight: 600,
+                textAlign: "center",
+              }}
             >
               {error}
             </Box>
           ) : null}
 
           {success ? (
-            <Box css={{ color: "$crimson12", fontWeight: 600 }}>{success}</Box>
+            <Box
+              css={{
+                color: "$crimson12",
+                fontWeight: 600,
+                textAlign: "center",
+              }}
+            >
+              {success}
+            </Box>
           ) : null}
           <Box
             css={{
@@ -170,22 +213,23 @@ const ContactPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
               borderTop: "1px solid $mauve4",
               width: "100%",
               marginTop: "$5",
+              direction: locale === "ar" ? "ltr" : "rtl",
             }}
           >
             <div>
               <Button
                 css={{ background: "$crimson2" }}
                 disabled={isLoading}
-                onClick={() => {}}
+                type="submit"
               >
-                {isLoading ? <Loading /> : "إرسال"}
+                {isLoading ? <Loading /> : t("contact.send", "Send")}
               </Button>
             </div>
           </Box>
         </Form>
       </Box>
 
-      <Footer {...meta} />
+      <Footer {...meta} contact={contactText} />
     </>
   );
 };

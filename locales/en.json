@@ -8,12 +8,44 @@
   "lang.ar": "العربية",
   "menu.home": "Home",
   "menu.cart": "Cart",
-  "menu.settings": "Settings"
-  ,"products.view_all": "View all products"
-  ,"products.headline": "Themes & plugins"
-  ,"pagination.next": "Next"
-  ,"pagination.prev": "Previous"
-  ,"preview": "Preview"
-  ,"demo.images": "Images"
-  ,"add_to_cart": "Add to cart"
+  "menu.settings": "Settings",
+  "products.view_all": "View all products",
+  "products.headline": "Themes & plugins",
+  "pagination.next": "Next",
+  "pagination.prev": "Previous",
+  "preview": "Preview",
+  "demo.images": "Images",
+  "add_to_cart": "Add to cart",
+  "checkout.title": "Checkout",
+  "checkout.instructions": "Themes & plugins, details and installation instructions will be sent via email. For further help, please contact us.",
+  "checkout.email_label": "Email address (required)",
+  "checkout.email_placeholder": "Enter your email here",
+  "checkout.email_invalid": "Please enter a valid email to complete the order.",
+  "checkout.payment_method": "Payment method",
+  "payment.card": "Debit or Credit Card",
+  "payment.paypal": "PayPal",
+  "payment.bancontact": "Bancontact",
+  "payment.bitcoin": "Bitcoin",
+  "checkout.total_label": "Total:",
+  "checkout.buy_now": "Buy now",
+  "checkout.cart_empty": "Add an item to your shopping cart!",
+  "confirmation.success_image_alt": "Order success image",
+  "confirmation.payment_error": "We couldn't verify your payment.",
+  "confirmation.payment_success": "Thank you! Payment completed successfully.",
+  "confirmation.order_ref_label": "Your order reference:",
+  "confirmation.order_ref_instructions": "(please keep it for any inquiry or issue)",
+  "confirmation.products_label": "Products:",
+  "confirmation.buyer_name_label": "Buyer name:",
+  "confirmation.email_label": "Email:",
+  "contact.name": "Name",
+  "contact.name_placeholder": "Full name",
+  "contact.email": "Email",
+  "contact.message": "Message",
+  "contact.placeholder_message": "Write your message here...",
+  "contact.send": "Send",
+  "contact.error_fill": "Please fill all fields.",
+  "contact.error_email": "Please enter a valid email.",
+  "contact.error_send": "Failed to send message. Please try again.",
+  "contact.error_network": "An error occurred while sending. Please try again.",
+  "contact.success": "Your message was sent successfully. We'll reply by email."
 }

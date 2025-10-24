@@ -8,9 +8,8 @@ import {
 } from "@radix-ui/react-icons";
 import Image from "next/image";
 
-
 const Wrapper = styled("footer", {
-  padding: "$4",
+  padding: "$2",
   marginTop: "$6",
   textAlign: "center",
 });
@@ -88,9 +87,32 @@ const PaymentLogo = styled("div", {
   },
 });
 
+const LogoContainer = styled("div", {
+  width: "auto",
+  height: 128,
+  marginBottom: "$5",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  "@media (max-width: 420px)": {
+    marginTop: "$5",
+    width: "auto",
+    height: 96,
+  },
+});
+
 const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
   return (
     <Wrapper>
+      <LogoContainer>
+        <Image
+          src="/m3d-shop.png"
+          alt="site logo"
+          width={128}
+          height={128}
+          style={{ objectFit: "contain", display: "block" }}
+        />
+      </LogoContainer>
       <strong>{contact}</strong>
       <SocialsWrapper>
         <Socials>
@@ -136,6 +158,7 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
           </SocialLink>
         </Socials>
       </SocialsWrapper>
+
       {/* Payment logos */}
       <Box
         css={{
@@ -148,19 +171,44 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
         }}
       >
         <PaymentLogo>
-          <Image src="/payments/bitcoin.svg" alt="Bitcoin" fill style={{ objectFit: "contain" }} />
+          <Image
+            src="/payments/bitcoin.svg"
+            alt="Bitcoin"
+            fill
+            style={{ objectFit: "contain" }}
+          />
         </PaymentLogo>
         <PaymentLogo>
-          <Image src="/payments/visa.svg" alt="Visa" fill style={{ objectFit: "contain" }} />
+          <Image
+            src="/payments/visa.svg"
+            alt="Visa"
+            fill
+            style={{ objectFit: "contain" }}
+          />
         </PaymentLogo>
         <PaymentLogo>
-          <Image src="/payments/mastercard.svg" alt="Mastercard" fill style={{ objectFit: "contain" }} />
+          <Image
+            src="/payments/mastercard.svg"
+            alt="Mastercard"
+            fill
+            style={{ objectFit: "contain" }}
+          />
         </PaymentLogo>
         <PaymentLogo>
-          <Image src="/payments/paypal.svg" alt="PayPal" fill style={{ objectFit: "contain" }} />
+          <Image
+            src="/payments/paypal.svg"
+            alt="PayPal"
+            fill
+            style={{ objectFit: "contain" }}
+          />
         </PaymentLogo>
         <PaymentLogo>
-          <Image src="/payments/bancontact.svg" alt="Bancontact" fill style={{ objectFit: "contain" }} />
+          <Image
+            src="/payments/bancontact.svg"
+            alt="Bancontact"
+            fill
+            style={{ objectFit: "contain" }}
+          />
         </PaymentLogo>
       </Box>
     </Wrapper>
