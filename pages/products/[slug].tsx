@@ -259,8 +259,8 @@ const DemoTile = styled("div", {
 });
 
 const AnimatedImage = styled(Image, {
-  transition: "opacity .3s ease, filter .3s ease",
-  transitionDelay: "120ms",
+  transition: "opacity 300ms ease, filter 300ms ease",
+  transitionDelay: "300ms",
 });
 
 // Hero-specific image alias to avoid any unintended size/style mixing with
@@ -299,6 +299,8 @@ const ProductPage: NextPage<{
     src: string;
     blur?: string;
   } | null>(null);
+  // State to control fade-in + blur effect for the main hero image
+  const [heroLoaded, setHeroLoaded] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -349,7 +351,14 @@ const ProductPage: NextPage<{
               src={images[0].path}
               fill={true}
               // use cover so placeholder scales to the container size
-              style={{ objectFit: "fill" }}
+              // apply opacity+filter styles based on load state to achieve
+              // fade-in with blur -> sharp transition
+              style={{
+                objectFit: "fill",
+                opacity: heroLoaded ? 1 : 0,
+                filter: heroLoaded ? "none" : "blur(30px)",
+                transition: "opacity 400ms ease, filter 300ms ease",
+              }}
               // main hero image: layout adds large horizontal padding, so on wide
               // screens the visible image width is ~40vw; on small screens it's full
               sizes="(min-width: 1024px) 40vw, 100vw"
@@ -358,6 +367,7 @@ const ProductPage: NextPage<{
               alt={images[0].path}
               placeholder="blur"
               blurDataURL={images[0].blurDataURL}
+              onLoadingComplete={() => setHeroLoaded(true)}
             />
           </div>
         ) : (
@@ -366,9 +376,16 @@ const ProductPage: NextPage<{
               src={PlaceholderImage}
               fill={true}
               // placeholder should cover the container; same responsive hint as hero
-              style={{ objectFit: "cover" }}
+              // match the same fade/blur behavior so the transition is consistent
+              style={{
+                objectFit: "cover",
+                opacity: heroLoaded ? 1 : 0,
+                filter: heroLoaded ? "none" : "blur(30px)",
+                transition: "opacity 300ms ease, filter 300ms ease",
+              }}
               sizes="(min-width: 1024px) 40vw, 100vw"
               alt="placeholder"
+              onLoadingComplete={() => setHeroLoaded(true)}
             />
           </div>
         )}

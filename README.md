@@ -34,3 +34,19 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Bitcoin payment setup
+
+This project includes a simple Bitcoin payment UI that displays a merchant QR code and wallet address for manual on-chain payments.
+
+To enable it:
+
+- Place your QR code SVG (the file you uploaded) at `public/payments/qr-code.svg`.
+- Set your wallet address in a public environment variable so it is available on the client:
+
+	- In development, add to `.env.local`:
+
+		NEXT_PUBLIC_BITCOIN_ADDRESS=yourbitcoinaddresshere
+
+- From the cart page, choose the Bitcoin payment method and click the purchase button. You'll be routed to `/bitcoin-payment` which shows the QR code and address. After sending funds from your wallet, click "I paid — continue" to clear the cart and reach the confirmation screen. Note: this flow does not do automatic on-chain verification — you'll need to verify payments manually or extend the server with a block explorer/webhook integration.
+

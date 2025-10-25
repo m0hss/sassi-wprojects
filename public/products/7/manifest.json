@@ -1,4 +1,8 @@
 {
-  "main": "mo-dev.webp",
-  "demos": []
+  "main": "ads.webp",
+  "demos": [
+    "wp-ads-plugin.webp",
+    "wp-Google-Adsense.webp",
+    "wp-sharing-profits.webp"
+  ]
 }

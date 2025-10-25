@@ -1,4 +1,9 @@
 {
   "main": "moapi.webp",
-  "demos": []
+  "demos": [
+    "m01.avif",
+    "m02.avif",
+    "m03.avif",
+    "m04.avif"
+  ]
 }

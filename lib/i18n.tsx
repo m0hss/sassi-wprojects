@@ -39,8 +39,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   // Initialize from build-time env default (NEXT_PUBLIC_DEFAULT_LOCALE) if provided,
   // otherwise fall back to Arabic. This ensures SSR uses the intended default.
-  const initialLocale =
-    (process.env.NEXT_PUBLIC_DEFAULT_LOCALE as Locale) || "ar";
+  const initialLocale: Locale = "ar";
   const [locale, setLocaleState] = useState<Locale>(() => initialLocale);
 
   // After the client mounts, pick up any stored locale or navigator preference.
@@ -59,12 +58,13 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     // If no stored preference, fall back to navigator language, then build default.
-    const nav = navigator.language || "";
-    const navLocale: Locale = nav.startsWith("en") ? "en" : "ar";
-    if (navLocale !== locale) {
+    /* const nav = navigator.language || "";
+    const navLocale: Locale = nav.startsWith("ar") ? "ar" : "en";
+ */
+  /*   if (navLocale !== locale) {
       setLocaleState(navLocale);
       return;
-    }
+    } */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run once on mount
 

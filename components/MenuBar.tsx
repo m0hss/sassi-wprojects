@@ -137,20 +137,12 @@ const Label = styled("label", {
   lineHeight: 1,
   userSelect: "none",
 });
-const LangSelect = styled("select", {
-  marginLeft: 12,
-  padding: "4px 8px",
-  borderRadius: 6,
-  border: "1px solid $mauve5",
-  background: "$mauve1",
-  color: "$crimson12",
-});
 
 const FlagButton = styled("button", {
   all: "unset",
-  width: 34,
-  height: 22,
-  padding: 2,
+  width: 20,
+  height: 18,
+  padding: "2px 7px",
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
@@ -158,7 +150,7 @@ const FlagButton = styled("button", {
   cursor: "pointer",
   border: "1px solid transparent",
   '&:hover': { background: "$mauve3" },
-  '&:focus': { boxShadow: "0 0 0 2px $mauve8" },
+  '&:focus': { boxShadow: "0 0 0 1px $mauve8" },
   variants: {
     selected: {
       true: {
@@ -172,8 +164,8 @@ const FlagButton = styled("button", {
 });
 
 const FlagImg = styled("img", {
-  width: 24,
-  height: 16,
+  width: 20,
+  height: 20,
   objectFit: "cover",
   display: "block",
 });
@@ -252,7 +244,11 @@ const MenuBar: React.FunctionComponent = () => {
                 <Label css={{ paddingRight: 8, paddingLeft: 0 }}>
                   {t("menu.language", "اللغة")}
                 </Label>
-                <Flex role="group" aria-label={t("menu.language", "اللغة") + " options"}>
+                <Flex
+                  role="group"
+                  aria-label={t("menu.language", "اللغة") + " options"}
+                  css={{ border: "1px solid $mauve5", borderRadius: 6 }}
+                >
                   <FlagButton
                     selected={locale === "en"}
                     aria-pressed={locale === "en"}

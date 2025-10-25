@@ -81,6 +81,10 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
   const { t } = useI18n();
   const router = useRouter();
 
+  const isBitcoin = Array.isArray(router.query.method)
+    ? router.query.method[0] === "bitcoin"
+    : (router.query.method as string | undefined) === "bitcoin";
+
   const { data: stripeData, error: stripeError } = useSWR(
     router.query.session_id
       ? `/api/checkout_sessions/${router.query.session_id}`
@@ -158,12 +162,13 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
       <Box as="main" css={{ paddingBottom: "$3" }}>
         <Box css={{ textAlign: "center" }}>
           <PageHeadline>
-            {(stripeError || paypalError) && (
+            {isBitcoin ? (
+              <span>{t("confirmation.bitcoin_pending_title")}</span>
+            ) : (stripeError || paypalError) ? (
               <span>{t("confirmation.payment_error")}</span>
-            )}
-            {(stripeData || paypalData) && (
+            ) : (stripeData || paypalData) ? (
               <span>{t("confirmation.payment_success")}</span>
-            )}
+            ) : null}
           </PageHeadline>
         </Box>
 
@@ -245,6 +250,13 @@ const Confirmation: NextPage<{ meta: Tmeta }> = ({ meta }) => {
               </ProductDescription>
             )}
           </div>
+        )}
+
+        {/* Bitcoin pending (no external provider data) */}
+        {isBitcoin && !(stripeData || paypalData) && (
+          <ProductDescription>
+            {t("confirmation.bitcoin_pending_body")}
+          </ProductDescription>
         )}
       </Box>
       <MenuBar />

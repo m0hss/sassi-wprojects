@@ -35,7 +35,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     include: {
       brand: true,
     },
-    take: 7,
+    take: 8,
   });
 
   /**

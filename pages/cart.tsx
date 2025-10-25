@@ -12,6 +12,7 @@ import { Tmeta } from "../types";
 import MenuBar from "../components/MenuBar";
 import { NextSeo } from "next-seo";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { useI18n } from "../lib/i18n";
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -65,6 +66,7 @@ const PaymentMethod = styled("label", {
 const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
   const { cart, productsTotal } = useCart();
   const { t } = useI18n();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [total, setTotal] = useState(productsTotal);
@@ -78,6 +80,19 @@ const CartPage: NextPage<{ meta: Tmeta }> = ({ meta }) => {
 
   const handleCheckout = async () => {
     setIsLoading(true);
+    // If user selected Bitcoin, route to the Bitcoin payment page where
+    // they can scan the merchant QR code or copy the address.
+    if (paymentMethod === "Bitcoin") {
+      try {
+        // amount in cents and currency code for the payment page
+        const currency = cart[0]?.product?.currency ?? "usd";
+        // productsTotal already in smallest unit (cents)
+        router.push(`/bitcoin-payment?amount=${productsTotal}&currency=${currency}`);
+        return;
+      } finally {
+        setIsLoading(false);
+      }
+    }
     const lineItems = [...cart.values()].map((item) =>
       cartItemToLineItem({ cartItem: item, images: [""] }),
     );

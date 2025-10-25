@@ -1,4 +1,10 @@
 {
   "main": "m0plyer.webp",
-  "demos": []
+  "demos": [
+    "m0plyer1.webp",
+    "m0plyer2.webp",
+    "m0plyer3.webp",
+    "m0plyer4.webp",
+    "m0plyer5.webp"
+  ]
 }
