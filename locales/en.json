@@ -32,6 +32,7 @@
   "bitcoin.no_address_title": "No Bitcoin address configured.",
   "bitcoin.no_address_instructions": "Please set NEXT_PUBLIC_BITCOIN_ADDRESS in your environment and place your QR code at /public/payments/qr-code.svg.",
   "bitcoin.copy_address": "Copy address",
+  "bitcoin.copied": "Copied!",
   "bitcoin.open_in_wallet": "Open in wallet",
   "bitcoin.btc_amount_label": "BTC amount",
   "bitcoin.optional_placeholder": "Optional (e.g. 0.00123)",

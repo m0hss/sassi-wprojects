@@ -91,7 +91,7 @@ const BitcoinPayment: React.FC<{
           <AddressBox>
             <div style={{ marginBottom: 15 }}>{address}</div>
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button onClick={() => copy(address)}>{copied ? t("bitcoin.copy_address") + "ed" : t("bitcoin.copy_address")}</Button>
+              <Button onClick={() => copy(address)}>{copied ? t("bitcoin.copied") : t("bitcoin.copy_address")}</Button>
             </div>
           </AddressBox>
           
@@ -130,6 +130,7 @@ const BitcoinPayment: React.FC<{
                 borderTop: "1px solid $mauve4",
                 marginTop: "$5",
                 width: "100%",
+                direction: "rtl",
               }}
             >
               <Button onClick={() => router.push("/confirmation?method=bitcoin")}>{t("bitcoin.i_paid_continue")}</Button>
