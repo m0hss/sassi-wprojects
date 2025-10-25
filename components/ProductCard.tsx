@@ -50,7 +50,7 @@ const ImageContainer = styled("div", {
 const AnimatedImage = styled(Image, {
   // Use filter-only transition so Next.js' blur placeholder smoothly becomes sharp.
   transition: "filter 300ms ease",
-  transitionDelay: "200ms",
+  transitionDelay: "100ms",
 });
 
 // Style the Link component directly since it's now an <a> tag internally
