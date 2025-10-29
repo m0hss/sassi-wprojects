@@ -87,7 +87,7 @@ export default async function handler(
           <p>Best regards,<br/>${shopName} Team</p>
           <p style="margin-top:12px;">
         <img
-          src="https://res.cloudinary.com/drkqvla4e/image/upload/m3d-shop_oey9z8.png"
+          src="https://res.cloudinary.com/drkqvla4e/image/upload/wprojects2_esko1y.png"
           alt="${shopName} logo"
           style="display:block; width:128px; height:auto; object-fit:contain;"
           width="128"

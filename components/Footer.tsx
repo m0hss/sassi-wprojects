@@ -106,14 +106,14 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
     <Wrapper>
       <LogoContainer>
         <Image
-          src="/m3d-shop.png"
+          src="/wprojects2.png"
           alt="site logo"
           width={128}
           height={128}
           style={{ objectFit: "contain", display: "block" }}
         />
       </LogoContainer>
-      <strong>{contact}</strong>
+      {/* <strong>{contact}</strong> */}
       <SocialsWrapper>
         <Socials>
           {/* Telegram */}
