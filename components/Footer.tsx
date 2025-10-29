@@ -90,7 +90,6 @@ const PaymentLogo = styled("div", {
 const LogoContainer = styled("div", {
   width: "auto",
   height: 128,
-  marginBottom: "$5",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
