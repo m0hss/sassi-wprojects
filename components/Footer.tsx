@@ -129,7 +129,7 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
 
           {/* WhatsApp */}
           <SocialLink
-            href="https://wa.me/32493622901"
+            href="#"
             target="_blank"
             rel="noreferrer noopener"
             title="WhatsApp"
