@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import prisma from '../../../lib/prisma';
 import { getPlaiceholder } from "plaiceholder";
 import path from "path";
-import getConfig from "next/config";
+// #import getConfig from "next/config";
 
 import { promises as fs } from "fs";
 
