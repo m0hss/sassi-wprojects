@@ -52,7 +52,7 @@ const SocialLink = styled("a", {
     },
   },
   "&:hover": {
-    transform: "translateY(-4px) scale(1.06)",
+    transform: "translateY(-1.5px) scale(1)",
     boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
     background: "$mauve4",
   },
@@ -129,7 +129,7 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
 
           {/* WhatsApp */}
           <SocialLink
-            href="#"
+            href="https://wa.me/32466035993"
             target="_blank"
             rel="noreferrer noopener"
             title="WhatsApp"
@@ -141,7 +141,7 @@ const Footer: React.FunctionComponent<Tmeta> = ({ name, contact }) => {
 
           {/* Facebook */}
           <SocialLink
-            href="https://facebook.com/AceDinari"
+            href="#"
             target="_blank"
             rel="noreferrer noopener"
             title="Facebook"
